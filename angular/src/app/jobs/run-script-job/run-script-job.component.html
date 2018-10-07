@@ -1,0 +1,25 @@
+<div class="container-fluid">
+
+  <h2>Add new job</h2>
+
+
+  <div class="container" class="was-validated">
+    <form [formGroup]="newJobForm" novalidate (ngSubmit)="submitForm(newJobForm.value)">
+      <div class="form-group">
+        <label for="exampleFormControlSelect1">Script</label>
+        <select class="form-control" [formControl]="newJobForm.controls['script']" required>
+          <option *ngFor="let script of scripts" [value]="script._id">{{script.name}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="exampleFormControlSelect1">Machine</label>
+        <select class="form-control" [formControl]="newJobForm.controls['machine']" required>
+          <option *ngFor="let machine of machines" [value]="machine._id">{{machine.name}}</option>
+        </select>
+      </div>
+      <button type="Start" class="btn btn-primary" [disabled]="!newJobForm.valid">Submit</button>
+    </form>
+  </div>
+
+
+</div>

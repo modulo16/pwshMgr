@@ -1,0 +1,17 @@
+<div class="container-fluid">
+  <h2>
+    Add new script
+  </h2>
+  <div class="container" class="was-validated">
+    <form [formGroup]="newScriptForm" novalidate (ngSubmit)="submitForm(newScriptForm.value)">
+      <div class="form-group">
+        <label for="exampleFormControlSelect1">Name</label>
+        <input class="form-control" [formControl]="newScriptForm.controls['name']" type="text" required>
+        <label for="exampleFormControlSelect1">Script Body</label>
+        <textarea class="form-control" [formControl]="newScriptForm.controls['scriptBody']" type="text" required></textarea>
+          
+      </div>
+      <button type="Start" class="btn btn-primary" [disabled]="!newScriptForm.valid">Submit</button>
+    </form>
+  </div>
+</div>

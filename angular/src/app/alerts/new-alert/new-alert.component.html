@@ -1,0 +1,33 @@
+<div class="container-fluid pt-3">
+  <h5 class="border-bottom">New Disk Space Alert</h5>
+  <div class="container" class="was-validated">
+    <form [formGroup]="newDiskSpaceAlertForm" novalidate (ngSubmit)="submitForm(newDiskSpaceAlertForm.value)">
+
+      <div class="form-group">
+        <label for="exampleFormControlSelect1">Machine</label>
+        <select class="form-control" [formControl]="newDiskSpaceAlertForm.controls['machineId']" [(ngModel)]="selectedMachineId" (change)="onChange()" required>
+          <option *ngFor="let machine of machines" [value]="machine._id">{{machine.name}}</option>
+        </select>
+      </div>
+
+      <div class="form-group" *ngIf="selectedMachine">
+        <label for="exampleFormControlSelect1">Drive</label>
+        <select class="form-control" [formControl]="newDiskSpaceAlertForm.controls['item']" required>
+          <option *ngFor="let drive of selectedMachine.drives" [value]="drive.name">{{drive.name}}</option>
+        </select>
+
+
+
+
+
+          <label for="exampleFormControlSelect1">Alert when free space below (GB)</label>
+          <input class="form-control" [formControl]="newDiskSpaceAlertForm.controls['threshold']" type="text" required>
+      </div>
+
+
+      <button type="Start" class="btn btn-success" [disabled]="!newDiskSpaceAlertForm.valid">Submit</button>
+    </form>
+  </div>
+</div>
+
+

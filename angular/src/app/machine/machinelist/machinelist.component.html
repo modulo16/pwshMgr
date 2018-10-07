@@ -1,0 +1,23 @@
+<div class="container-fluid pt-3">
+  <table class="table table-bordered table-hover table-sm">
+    <thead class="thead-light">
+      <tr>
+        <th>Name</th>
+        <th>Operating System</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr [ngClass]="runThis(machine)" *ngFor="let machine of machines">
+        <td *ngIf="machine.name">
+          <a [routerLink]="['/machines', machine._id ]" class="text-dark">{{machine.name}}</a>
+        </td>
+        <td *ngIf="!machine.name">
+          <a [routerLink]="['/machines', machine._id ]" class="text-dark">{{machine.ipAddress}}</a>
+        </td>
+        <td>{{machine.operatingSystem}}</td>
+        <td>{{machine.status}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

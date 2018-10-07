@@ -1,0 +1,16 @@
+<div class="container-fluid pt-3">
+  <table class="table table-bordered table-hover table-sm">
+    <thead class="thead-light">
+      <tr>
+        <th>Alert Policy Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let alertPolicy of alertPolicies">
+        <td>
+          <a [routerLink]="['/alertpolicies', alertPolicy._id ]" class="text-dark">{{alertPolicy.name}}</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

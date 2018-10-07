@@ -1,0 +1,16 @@
+<div class="container-fluid pt-3">
+  <h5 class="border-bottom">New Slack Integration</h5>
+  <div class="container" class="was-validated">
+    <form [formGroup]="newSlackIntegrationForm" novalidate (ngSubmit)="submitForm(newSlackIntegrationForm.value)">
+      <div class="form-group">
+        <label for="exampleFormControlSelect1">Name</label>
+        <input class="form-control" [formControl]="newSlackIntegrationForm.controls['name']" type="text" required>
+      </div>
+      <div class="form-group">
+        <label for="exampleFormControlSelect1">Web Hook</label>
+        <input class="form-control" [formControl]="newSlackIntegrationForm.controls['webHook']" type="text" required>
+      </div>
+      <button type="Start" class="btn btn-success" [disabled]="!newSlackIntegrationForm.valid">Submit</button>
+    </form>
+  </div>
+</div>

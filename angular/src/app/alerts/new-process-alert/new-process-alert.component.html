@@ -1,0 +1,26 @@
+<div class="container-fluid pt-3">
+  <h5 class="border-bottom">New Windows Service Alert</h5>
+  <div class="container" class="was-validated">
+    <form [formGroup]="newProcessAlertForm" novalidate (ngSubmit)="submitForm(newProcessAlertForm.value)">
+      <div class="form-group">
+        <label for="exampleFormControlSelect1">Machine</label>
+        <select class="form-control" [formControl]="newProcessAlertForm.controls['machineId']" [(ngModel)]="selectedMachineId" (change)="onChange()"
+          required>
+          <option *ngFor="let machine of machines" [value]="machine._id">{{machine.name}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="exampleFormControlSelect1">Process</label>
+        <input class="form-control" [formControl]="newProcessAlertForm.controls['item']" type="text" required>
+      </div>
+      <div class="form-group">
+        <label for="exampleFormControlSelect1">Status</label>
+        <select class="form-control" [formControl]="newProcessAlertForm.controls['threshold']" required>
+          <option value="is-running">Running</option>
+          <option value="not-running">Not Running</option>
+        </select>
+      </div>
+      <button type="Start" class="btn btn-success" [disabled]="!newProcessAlertForm.valid">Submit</button>
+    </form>
+  </div>
+</div>

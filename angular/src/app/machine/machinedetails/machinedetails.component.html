@@ -1,0 +1,208 @@
+<div class="container-fluid pt-3" *ngIf="machine">
+  <table class="table table-bordered table-hover table-sm">
+    <tbody>
+      <tr>
+        <th>Name</th>
+        <td>{{machine.name}}</td>
+        <th>Operating System</th>
+        <td>{{machine.operatingSystem}}</td>
+      </tr>
+      <tr>
+        <th>IP Address</th>
+        <td>{{machine.ipAddress}}</td>
+        <th>Public IP</th>
+        <td>{{machine.publicIp}}</td>
+      </tr>
+      <tr>
+        <th>Make</th>
+        <td>{{machine.make}}</td>
+        <th>Model</th>
+        <td>{{machine.model}}</td>
+      </tr>
+      <tr>
+        <th>Serial Number</th>
+        <td>{{machine.serialNumber}}</td>
+        <th>Architecture</th>
+        <td>{{machine.architecture}}</td>
+      </tr>
+      <tr>
+        <th>Domain</th>
+        <td>{{machine.domain}}</td>
+        <th>Date Added</th>
+        <td>{{machine.dateAdded | date:'medium'}}</td>
+      </tr>
+      <tr [ngClass]="class()">
+        <th>Status</th>
+        <td>{{machine.status}}</td>
+        <th>Last Contact</th>
+        <td>{{machine.dateUpdated | date:'medium'}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="show=!show">{{show ? 'Hide Applications' : 'Show Applications'}}</button>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="showProcesses=!showProcesses">{{showProcesses ? 'Hide Processes' : 'Show Processes'}}</button>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="showServices=!showServices">{{showServices ? 'Hide Services' : 'Show Services'}}</button>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="showDrives=!showDrives">{{showDrives ? 'Hide Drives' : 'Show Drives'}}</button>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="showJobs()" *ngIf="!jobs">Show Jobs</button>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="hideJobs()" *ngIf="jobs">Hide Jobs</button>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="changeCredential(editTemplate)">Credential</button>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="deleteMachine()">Delete</button>
+  <br>
+  <br>
+
+  <div style="overflow-y: scroll; height: 400px" *ngIf="showServices">
+    <table class="table table-bordered table-hover table-sm">
+      <thead class="thead-light">
+        <tr>
+          <th>Service Name</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr [ngClass]="runThis(service)" *ngFor="let service of machine.services">
+          <td>{{service.displayName}}</td>
+          <td>{{service.status}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="overflow-y: scroll; height: 400px" *ngIf="showProcesses">
+    <table class="table table-bordered table-hover table-sm">
+      <thead class="thead-light">
+        <tr>
+          <th>Process Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let process of machine.processes">
+          <td>{{process.name}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="overflow-y: scroll; height: 400px" *ngIf="show">
+    <table class="table table-bordered table-hover table-sm">
+      <thead class="thead-light">
+        <tr>
+          <th>Application Name</th>
+          <th>Version</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let application of machine.applications">
+          <td>{{application.name}}</td>
+          <td>{{application.version}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="overflow-y: scroll; height: 400px" *ngIf="jobs">
+    <table class="table table-bordered table-hover table-sm">
+      <thead class="thead-light">
+        <tr>
+          <th>Job Name</th>
+          <th>Status</th>
+          <th>Date Added</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let job of jobs">
+          <td><a [routerLink]="['/jobs', job._id]" class="text-dark">{{job.name}}</a></td>
+          <td>{{job.status}}</td>
+          <td>{{job.dateAdded | date:'medium'}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="overflow-y: scroll; height: 400px" *ngIf="showDrives">
+    <table class="table table-bordered table-hover table-sm">
+      <thead class="thead-light">
+        <tr>
+          <th>Drive Name</th>
+          <th>Used GB</th>
+          <th>Free GB</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let drive of machine.drives">
+          <td>{{drive.name}}</td>
+          <td>{{drive.usedGB}}</td>
+          <td>{{drive.freeGB}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- <ng-template #template>
+
+  <div *ngIf="!activeDeployment">
+    <div class="modal-header">
+      <h5 class="modal-title pull-left">{{ machine.name }} - New Deployment</h5>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="container" class="was-validated">
+        <form [formGroup]="deployForm" novalidate (ngSubmit)="submitForm(deployForm.value)">
+          <div class="form-group">
+            <label for="exampleFormControlSelect1">Application</label>
+            <select class="form-control" [formControl]="deployForm.controls['chocoApp']" required>
+              <option *ngFor="let application of applications" [value]="application.chocoName">{{application.name}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlSelect1">Credential</label>
+            <select class="form-control" [formControl]="deployForm.controls['credential']" required>
+              <option *ngFor="let credential of credentials" [value]="credential._id">{{credential.username}}</option>
+            </select>
+          </div>
+          <button type="Start" class="btn btn-success" [disabled]="!deployForm.valid">Start</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!<div *ngIf="activeDeployment">
+    <div class="modal-header">
+      <h5 class="modal-title pull-left">{{ activeDeployment.name }}</h5>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="container">
+        <p *ngIf="activeDeployment">Status: {{activeDeployment.status}}</p>
+      </div>
+      <button type="Start" class="btn btn-success" (click)="refreshDeploymentStatus()">Refresh</button>
+    </div>
+  </div> -->
+
+<!-- </ng-template> -->
+
+<ng-template #editTemplate>
+  <div>
+    <div class="modal-header">
+      <h5 class="modal-title pull-left">Edit ({{ machine.name }})</h5>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="container">
+        <div class="form-group">
+          <label for="exampleFormControlSelect1">Credential</label>
+          <select class="form-control col-md-5" #type="ngModel" [(ngModel)]="machine.credential">
+            <option *ngFor="let credential of credentials" [value]="credential._id">{{credential.credentialName}}</option>
+          </select>
+        </div>
+        <button type="Start" class="btn btn-primary" (click)="saveMachine()">Save</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

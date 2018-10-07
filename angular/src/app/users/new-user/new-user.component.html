@@ -1,0 +1,12 @@
+<div class="container-fluid pt-3">
+  <h5 class="border-bottom">New User</h5>
+  <div class="container" class="was-validated">
+    <form [formGroup]="newUserForm" novalidate (ngSubmit)="submitForm(newUserForm.value)">
+      <div class="form-group">
+        <label for="exampleFormControlSelect1">Name</label>
+        <input class="form-control" [formControl]="newUserForm.controls['name']" type="text" required>
+      </div>
+      <button type="Start" class="btn btn-success" [disabled]="!newUserForm.valid">Submit</button>
+    </form>
+  </div>
+</div>

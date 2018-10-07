@@ -1,0 +1,31 @@
+{
+  "name": "pwshmgr",
+  "version": "0.0.5-alpha",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "bin": "index.js",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "http-status": "^1.1.0",
+    "jsonwebtoken": "^8.2.2",
+    "mongoose": "^5.1.1",
+    "mongoose-unique-validator": "^2.0.1",
+    "node-cron": "^2.0.1",
+    "socket.io": "^2.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.4"
+  },
+  "pkg": {
+    "assets":["dist/*"]
+  }
+}
