@@ -8,8 +8,7 @@ Under development.
 
 This project is in very early stages and is not suitable for production environments.
 
---------------
-#### Current Features
+## Current Features
 * Monitor Windows Server/Desktops agentless via WinRM. Machines are polled every 10 minutes
 * Run scripts
 * Install apps from the public Chocolatey repository
@@ -17,8 +16,7 @@ This project is in very early stages and is not suitable for production environm
 * Generate alerts and send to Slack via webhook
 * Realtime page updates on machine details and running jobs
 
---------------
-#### Stack
+## Stack
 * NodeJS 10.11.0
 * MongoDB 4.0.2
 * Angular 6
@@ -38,8 +36,8 @@ This project is in very early stages and is not suitable for production environm
 #### Running job
 ![Imgur](https://i.imgur.com/KpisGOW.png)
 
---------------
-#### Planned
+
+## Planned
 * Package into installable executable
 * Switch to PowerShell Core so it can run on Linux
 * Ability to schedule scripts
