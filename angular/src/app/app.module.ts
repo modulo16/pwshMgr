@@ -26,11 +26,8 @@ import { CredentialDetailsComponent } from './credentials/credential-details/cre
 import { NewUserComponent } from './users/new-user/new-user.component';
 import { environment } from '../environments/environment';
 import { LoginComponent } from './login/login.component';
-import { GroupService } from './groups/group.service';
-import { GroupListComponent } from './groups/group-list/group-list.component';
 import { ScriptService } from './script/script.service';
 import { NewScriptComponent } from './script/new-script/new-script.component';
-import { NewGroupComponent } from './groups/new-group/new-group.component';
 import { NewAlertComponent } from './alerts/new-alert/new-alert.component';
 import { AlertPolicyListComponent } from './alerts/alert-policy-list/alert-policy-list.component';
 import { AlertListComponent } from './alerts/alert-list/alert-list.component';
@@ -50,6 +47,8 @@ import { NewProcessAlertComponent } from './alerts/new-process-alert/new-process
 import { AuthService } from './auth/auth.service';
 import { AuthInterceptor } from "./auth/auth-interceptor";
 import { AuthGuard } from './auth/auth.guard';
+import { IntegrationListComponent } from './integrations/integration-list/integration-list.component';
+import { IntegrationDetailComponent } from './integrations/integration-detail/integration-detail.component';
 
 @NgModule({
   declarations: [
@@ -67,9 +66,7 @@ import { AuthGuard } from './auth/auth.guard';
     CredentialDetailsComponent,
     NewUserComponent,
     LoginComponent,
-    GroupListComponent,
     NewScriptComponent,
-    NewGroupComponent,
     NewAlertComponent,
     AlertPolicyListComponent,
     AlertListComponent,
@@ -83,7 +80,9 @@ import { AuthGuard } from './auth/auth.guard';
     JobListComponent,
     NewJobComponent,
     RunScriptJobComponent,
-    NewProcessAlertComponent
+    NewProcessAlertComponent,
+    IntegrationListComponent,
+    IntegrationDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -134,10 +133,6 @@ import { AuthGuard } from './auth/auth.guard';
         component: RunScriptJobComponent
       },
       {
-        path: 'groups/new',
-        component: NewGroupComponent
-      },
-      {
         path: 'applications/:id',
         component: ApplicationDetailsComponent
       },
@@ -170,12 +165,12 @@ import { AuthGuard } from './auth/auth.guard';
         component: UserListComponent
       },
       {
-        path: 'groups',
-        component: GroupListComponent
-      },
-      {
         path: 'scripts',
         component: ScriptListComponent
+      },
+      {
+        path: 'integrations',
+        component: IntegrationListComponent
       },
       {
         path: 'jobs',
@@ -212,7 +207,7 @@ import { AuthGuard } from './auth/auth.guard';
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    MachineService, UserService, ApplicationService, CredentialService, GroupService, ScriptService, IntegrationService, JobService],
+    MachineService, UserService, ApplicationService, CredentialService, ScriptService, IntegrationService, JobService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

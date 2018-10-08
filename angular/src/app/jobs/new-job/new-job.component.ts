@@ -7,8 +7,6 @@ import { Router } from '@angular/router';
 import { ApplicationService } from '../../applications/application.service';
 import { Application } from '../../applications/application.model';
 import { Machine } from '../../machine/machine.model';
-import { Group } from '../../groups/group.model';
-import { GroupService } from '../../groups/group.service';
 
 @Component({
   selector: 'app-new-job',
@@ -26,7 +24,6 @@ export class NewJobComponent implements OnInit {
     private formBuilder: FormBuilder,
     private machineService: MachineService,
     private applicationService: ApplicationService,
-    private groupService: GroupService,
     private router: Router) {
 
     this.newJobForm = this.formBuilder.group({

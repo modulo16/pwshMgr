@@ -12,8 +12,6 @@ import { Application } from '../../applications/application.model';
 import { CredentialService } from '../../credentials/credential.service';
 import { Credential } from '../../credentials/credential.model';
 import * as io from 'socket.io-client';
-import { Group } from '../../groups/group.model';
-import { GroupService } from '../../groups/group.service';
 import { JobService } from '../../jobs/jobs.service';
 
 @Component({
@@ -42,7 +40,6 @@ export class MachinedetailsComponent implements OnInit, OnDestroy {
   applications: Application[]
   credentials: Credential[];
   refreshing: string;
-  groups: Group[];
   jobs: Job[];
   showJobsDiv: Boolean
 
@@ -55,7 +52,6 @@ export class MachinedetailsComponent implements OnInit, OnDestroy {
     private applicationService: ApplicationService,
     private credentialService: CredentialService,
     private router: Router,
-    private groupService: GroupService,
     private jobService: JobService
   ) {
 

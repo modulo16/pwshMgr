@@ -57,7 +57,7 @@
       <li dropdown class="nav-item dropdown" *ngIf="userIsAuthenticated">
         <a href id="basic-link" class="nav-link dropdown-toggle" dropdownToggle (click)="false" aria-controls="basic-link-dropdown">Integrations</a>
         <div *dropdownMenu id="basic-link-dropdown" aria-labelledby="basic-link" class="dropdown-menu">
-          <a class="dropdown-item" [routerLink]="['/alerts']">All Integrations</a>
+          <a class="dropdown-item" [routerLink]="['/integrations']">All Integrations</a>
           <a class="dropdown-item" [routerLink]="['/integrations/new-slack']">New Slack Integration</a>
         </div>
       </li>

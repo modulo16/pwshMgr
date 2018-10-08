@@ -3,13 +3,15 @@
     <thead class="thead-light">
       <tr>
         <th>Name</th>
+        <th>webHook</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let group of groups">
+      <tr *ngFor="let integration of integrations">
         <td>
-          <a [routerLink]="['/groups', group._id ]" class="text-dark">{{group.name}}</a>
+          <a [routerLink]="['/integrations', integration._id ]" class="text-dark">{{integration.name}}</a>
         </td>
+        <td>{{integration.webHook}}</td>
       </tr>
     </tbody>
   </table>
