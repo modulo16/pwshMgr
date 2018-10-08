@@ -8,6 +8,8 @@ Under development.
 
 This project is in very early stages and is not suitable for production environments.
 
+I am looking for testers, so please get in touch if interested: pwshmgr@gmail.com
+
 ## Current Features
 * Monitor Windows Server/Desktops agentless via WinRM. Machines are polled every 10 minutes
 * Run scripts
