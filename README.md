@@ -1,9 +1,16 @@
 # pwshMgr
 
 ### PowerShell based Management and Monitoring Portal
+
+## Status
+
+Under development.
+
+This project is in very early stages and is not suitable for production environments.
+
 --------------
 #### Current Features
-* Monitor Windows Server/Desktops agentless via WinRM
+* Monitor Windows Server/Desktops agentless via WinRM. Machines are polled every 10 minutes
 * Run scripts
 * Install apps from the public Chocolatey repository
 * View information on machines including applications, running processes, disk space usage and availability
@@ -31,3 +38,9 @@
 #### Running job
 ![Imgur](https://i.imgur.com/KpisGOW.png)
 
+--------------
+#### Planned
+* Package into installable executable
+* Switch to PowerShell Core so it can run on Linux
+* Ability to schedule scripts
+* Ability to add machines to groups so jobs and alert policies can be created against multiple machines
