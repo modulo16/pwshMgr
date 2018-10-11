@@ -10,6 +10,7 @@ const bcrypt = require("bcryptjs");
 const User = require('./server/models/user');
 require('dotenv').config();
 
+
 bcrypt.hash("pwshmgradmin", 10)
   .then(hash => {
     const user = new User({

@@ -24,19 +24,14 @@ router.post('/', checkAuth, async (req, res) => {
 router.get('/', checkAuth, (req, res) => {
     Alert.find({}, function (err, alerts) {
         if (err) return res.status(status.BAD_REQUEST).json(err);
-
         // object of all the machines
         res.status(status.OK).json(alerts);
     });
 });
 
-// delete single
-router.delete('/:alertId', checkAuth, (req, res) => {
-    var alertId = req.params.alertId;
-    Alert.findByIdAndRemove(alertId, function (err) {
-        if (err) return res.status(status.BAD_REQUEST).json(err);
-        res.status(status.OK).json({ message: 'SUCCESS' });
-    });
+router.delete('/:id', checkAuth, async (req, res) => {
+    await Alert.findByIdAndRemove(req.params.id);
+    res.status(status.OK).json({ message: 'SUCCESS' });
 });
 
 router.get('/:id', checkAuth, validateObjectId, async (req, res) => {

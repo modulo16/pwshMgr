@@ -33,13 +33,9 @@ router.post('/offline/:id', checkAuth, validateObjectId, async (req,res) => {
     res.status(status.OK).json({message: 'Success'});
 })
 
-// delete machine
-router.delete('/:machineId', checkAuth, (req, res) => {
-    var machineId = req.params.machineId;
-    Machine.findByIdAndRemove(machineId, function (err) {
-        if (err) return res.status(status.BAD_REQUEST).json(err);
-        res.status(status.OK).json({ message: 'SUCCESS' });
-    });
+router.delete('/:id', checkAuth, async (req, res) => {
+    await Machine.findByIdAndRemove(req.params.id);
+    res.status(status.OK).json({ message: 'SUCCESS' });
 });
 
 router.get('/', checkAuth, (req, res) => {

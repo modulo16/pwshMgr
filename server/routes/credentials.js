@@ -34,13 +34,9 @@ router.get('/:id', checkAuth, validateObjectId, async (req, res) => {
     res.send(credential);
 });
 
-
-router.delete('/:credentialId', checkAuth, (req, res) => {
-    var credentialId = req.params.credentialId;
-    Creds.findByIdAndRemove(credentialId, function (err) {
-        if (err) return res.status(status.BAD_REQUEST).json(err);
-        res.status(status.OK).json({ message: 'SUCCESS' });
-    });
+router.delete('/:id', checkAuth, async (req, res) => {
+    await Creds.findByIdAndRemove(req.params.id);
+    res.status(status.OK).json({ message: 'SUCCESS' });
 });
 
 module.exports = router;

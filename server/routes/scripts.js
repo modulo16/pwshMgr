@@ -33,12 +33,9 @@ router.get('/', checkAuth, async (req, res) => {
     }
 });
 
-// delete script
-router.delete('/:id', checkAuth, (req, res) => {
-    Script.findByIdAndRemove(req.params.id, function (err) {
-        if (err) return res.status(status.BAD_REQUEST).json(err);
-        res.status(status.OK).json({ message: 'SUCCESS' });
-    });
+router.delete('/:id', checkAuth, async (req, res) => {
+    await Script.findByIdAndRemove(req.params.id);
+    res.status(status.OK).json({ message: 'SUCCESS' });
 });
 
 module.exports = router;

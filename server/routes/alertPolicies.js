@@ -70,12 +70,9 @@ router.get('/', checkAuth, (req, res) => {
 });
 
 // delete single
-router.delete('/:alertPolicyId', checkAuth, (req, res) => {
-    var alertPolicyId = req.params.alertPolicyId;
-    AlertPolicy.findByIdAndRemove(alertPolicyId, function (err) {
-        if (err) return res.status(status.BAD_REQUEST).json(err);
-        res.status(status.OK).json({ message: 'SUCCESS' });
-    });
+router.delete('/:alertPolicyId', checkAuth, async (req, res) => {
+    await AlertPolicy.findByIdAndRemove(req.params.alertPolicyId);
+    res.status(status.OK).json({ message: 'SUCCESS' });
 });
 
 module.exports = router;
