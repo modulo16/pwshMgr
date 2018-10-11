@@ -2,15 +2,14 @@ const validateObjectId = require('../middleware/validateObjectId');
 const express = require('express');
 const router = express.Router();
 const Job = require('../models/job');
-var mongoose = require('mongoose');
-var status = require('http-status');
+const mongoose = require('mongoose');
+const status = require('http-status');
 const http = require('http');
 const Machine = require('../models/machine')
 const Application = require('../models/application')
 const Script = require('../models/script')
 const checkAuth = require("../middleware/check-auth");
 
-/* POST: save and start a new job */
 router.post('/', checkAuth, async (req, res) => {
     const machine = await Machine.findById(req.body.machine);
     if (req.body.script) {
@@ -39,7 +38,7 @@ router.post('/', checkAuth, async (req, res) => {
     }
     await newJob.save()
     res.status(status.OK).json(newJob);
-    //start job run
+
     var exec = require('child_process').exec;
     if (req.body.application) {
         let scriptPath = require("path").resolve(__dirname, '../../scripts/install_choco_app.ps1')
@@ -104,7 +103,6 @@ router.post('/', checkAuth, async (req, res) => {
 
 });
 
-//get job by ID
 router.get('/:id', checkAuth, validateObjectId, async (req, res) => {
     const job = await Job.findById(req.params.id);
     if (!job) return res.status(404).send('The job with the given ID was not found.');
@@ -126,23 +124,14 @@ router.get('/:id', checkAuth, validateObjectId, async (req, res) => {
     res.send(job)
 });
 
-/* GET all saved jobs */
 router.get('/', checkAuth, async (req, res) => {
-    try {
-        // const jobs = await Job.find({ subJob: false }).sort('-startDate')
-        const jobs = await Job.find().sort('-dateAdded')
-        res.status(status.OK).json(jobs);
-    }
-    catch (ex) {
-        res.status(500).send('Something failed.')
-    }
+    const jobs = await Job.find();
+    res.send(jobs);
 });
 
-/* PUT: update a new job */
 router.put('/', checkAuth, (req, res) => {
     var data = req.body;
     var id = data._id;
-
     if (data.status == "Finished") {
         var jobToUpdate = {
             name: data.name,
@@ -166,7 +155,6 @@ router.put('/', checkAuth, (req, res) => {
         }
     }
 
-    // find the machine with id :id
     Job.findByIdAndUpdate(id, jobToUpdate, function (err, job) {
         Job.findById(id, function (err, jobFounded) {
             req.io.sockets.in(id).emit('jobUpdate', jobFounded)

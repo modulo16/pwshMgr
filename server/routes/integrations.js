@@ -5,7 +5,6 @@ var status = require('http-status');
 const SlackIntegration = require('../models/integration');
 const checkAuth = require("../middleware/check-auth");
 
-// POST new integration
 router.post('/', checkAuth, async (req, res) => {
     var data = req.body;
     var newSlackIntegration = SlackIntegration({
@@ -16,13 +15,9 @@ router.post('/', checkAuth, async (req, res) => {
     res.status(status.OK).json(newSlackIntegration);
 });
 
-router.get('/', checkAuth, (req, res) => {
-    SlackIntegration.find({}, function (err, slackIntegrations) {
-        if (err) return res.status(status.BAD_REQUEST).json(err);
-
-        // object of all the machines
-        res.status(status.OK).json(slackIntegrations);
-    });
+router.get('/', checkAuth, async (req, res) => {
+    const slackIntegrations = await SlackIntegration.find();
+    res.send(slackIntegrations);
 });
 
 module.exports = router;

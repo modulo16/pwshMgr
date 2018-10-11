@@ -2,19 +2,15 @@ const validateObjectId = require('../middleware/validateObjectId');
 const express = require('express');
 const router = express.Router();
 const Creds = require('../models/credential');
-var mongoose = require('mongoose');
-var status = require('http-status');
+const mongoose = require('mongoose');
+const status = require('http-status');
 const checkAuth = require("../middleware/check-auth");
 
-// get all credentials
-router.get('/', checkAuth, (req, res) => {
-    Creds.find({}, function (err, creds) {
-        if (err) return res.status(status.BAD_REQUEST).json(err);
-        res.status(status.OK).json(creds);
-    });
+router.get('/', checkAuth, async (req, res) => {
+    const creds = await Creds.find();
+    res.send(creds);
 });
 
-// post new credential
 router.post('/', checkAuth, (req, res) => {
     var data = req.body;
     var newCredential = Creds({

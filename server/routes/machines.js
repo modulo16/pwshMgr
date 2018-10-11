@@ -3,8 +3,8 @@ const express = require('express');
 const router = express.Router();
 const Machine = require('../models/machine');
 const Group = require('../models/groups');
-var mongoose = require('mongoose');
-var status = require('http-status');
+const mongoose = require('mongoose');
+const status = require('http-status');
 const Job = require('../models/job');
 const checkAuth = require("../middleware/check-auth");
 
@@ -38,16 +38,9 @@ router.delete('/:id', checkAuth, async (req, res) => {
     res.status(status.OK).json({ message: 'SUCCESS' });
 });
 
-router.get('/', checkAuth, (req, res) => {
-    Machine.find({}, 'name _id operatingSystem status ipAddress', function (err, machines) {
-        if (err) return res.status(status.BAD_REQUEST).json(err);
-        console.log(machines.length)
-        if (machines.length == "0"){
-            console.log("no machines")
-            return res.status(204).send()
-        }
-        res.status(status.OK).json(machines);
-    });
+router.get('/', checkAuth, async (req, res) => {
+    const machines = await Machine.find({},'name _id operatingSystem status ipAddress');
+    res.send(machines);
 });
 
 router.put('/:id', checkAuth, validateObjectId, async (req, res) => {

@@ -1,15 +1,15 @@
 require('dotenv').config();
-var uristring = process.env.MONGODBPATH
+const uristring = process.env.MONGODBPATH
 const express = require('express');
 const router = express.Router();
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 mongoose.connect(uristring)
-.then(connection => {
-    console.log('Connected to MongoDB')
-})
-.catch(error => {
-  console.log(error.message)
- });
+    .then(connection => {
+        console.log('Connected to MongoDB')
+    })
+    .catch(error => {
+        console.log(error.message)
+    });
 
 const machines = require('./machines');
 const users = require('./users');
