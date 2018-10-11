@@ -1,8 +1,15 @@
-var uristring = process.env.MONGODB_URI || 'mongodb://localhost:27017/pwshmgr';
+require('dotenv').config();
+var uristring = process.env.MONGODBPATH
 const express = require('express');
 const router = express.Router();
 var mongoose = require('mongoose');
-mongoose.connect(uristring);
+mongoose.connect(uristring)
+.then(connection => {
+    console.log('Connected to MongoDB')
+})
+.catch(error => {
+  console.log(error.message)
+ });
 
 const machines = require('./machines');
 const users = require('./users');

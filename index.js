@@ -8,14 +8,22 @@ const { exec } = require('child_process');
 var cron = require('node-cron');
 const bcrypt = require("bcryptjs");
 const User = require('./server/models/user');
+require('dotenv').config();
 
-bcrypt.hash("pwshmgradmin", 10).then(hash => {
-  const user = new User({
-    email: "admin@admin.admin",
-    password: hash
+bcrypt.hash("pwshmgradmin", 10)
+  .then(hash => {
+    const user = new User({
+      email: "admin@admin.admin",
+      password: hash
+    });
+    user.save()
+      .then(user => {
+        console.log('created new user')
+      })
+      .catch(error => {
+        console.log("user already created")
+      });
   });
-  user.save()
-});
 
 cron.schedule('*/10 * * * *', () => {
   let scriptPath = path.join(__dirname, './scripts/data_update.ps1');
