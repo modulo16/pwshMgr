@@ -19,7 +19,10 @@ const credentials = require('./credentials');
 const scripts = require('./scripts');
 const alertPolicies = require('./alertPolicies');
 const alerts = require('./alerts')
-const integrations = require('./integrations')
+const integrations = require('./integrations');
+const Alert = require('../models/alert');
+const Machine = require('../models/machine');
+const checkAuth = require("../middleware/check-auth");
 
 router.use('/machine', machines);
 router.use('/job', jobs);
@@ -29,6 +32,18 @@ router.use('/application', applications);
 router.use('/script', scripts);
 router.use('/alertpolicy', alertPolicies);
 router.use('/alert', alerts);
-router.use('/integration', integrations)
+router.use('/integration', integrations);
+
+router.get('/count', async (req, res) => {
+    const onlineMachines = await Machine.count({ status: 'Online' });
+    const offlineMachines = await Machine.count({ status: 'Offline' });
+    const alerts = await Alert.count();
+    const count = {
+        alerts: alerts,
+        onlineMachines: onlineMachines,
+        offlineMachines: offlineMachines
+    }
+    res.send(count)
+});
 
 module.exports = router;

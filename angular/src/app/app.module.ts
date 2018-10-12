@@ -49,6 +49,8 @@ import { AuthInterceptor } from "./auth/auth-interceptor";
 import { AuthGuard } from './auth/auth.guard';
 import { IntegrationListComponent } from './integrations/integration-list/integration-list.component';
 import { IntegrationDetailComponent } from './integrations/integration-detail/integration-detail.component';
+import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
+import { DashboardService } from './dashboard/dashboard.service';
 
 @NgModule({
   declarations: [
@@ -82,7 +84,8 @@ import { IntegrationDetailComponent } from './integrations/integration-detail/in
     RunScriptJobComponent,
     NewProcessAlertComponent,
     IntegrationListComponent,
-    IntegrationDetailComponent
+    IntegrationDetailComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -197,6 +200,10 @@ import { IntegrationDetailComponent } from './integrations/integration-detail/in
         component: ApplicationListComponent
       },
       {
+        path: 'dashboard',
+        component: DashboardComponent
+      },
+      {
         path: 'machines',
         component: MachinelistComponent
       },
@@ -207,7 +214,7 @@ import { IntegrationDetailComponent } from './integrations/integration-detail/in
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    MachineService, UserService, ApplicationService, CredentialService, ScriptService, IntegrationService, JobService],
+    MachineService, UserService, ApplicationService, CredentialService, ScriptService, IntegrationService, JobService, DashboardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
