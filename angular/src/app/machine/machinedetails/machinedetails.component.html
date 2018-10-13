@@ -110,7 +110,9 @@
       </thead>
       <tbody>
         <tr *ngFor="let job of jobs">
-          <td><a [routerLink]="['/jobs', job._id]" class="text-dark">{{job.name}}</a></td>
+          <td>
+            <a [routerLink]="['/jobs', job._id]" class="text-dark">{{job.name}}</a>
+          </td>
           <td>{{job.status}}</td>
           <td>{{job.dateAdded | date:'medium'}}</td>
         </tr>

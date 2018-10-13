@@ -5,6 +5,22 @@
         <th>Alert Name</th>
         <td>{{alert.name}}</td>
       </tr>
+      <tr [ngClass]="class()">
+        <th>Priority</th>
+        <td>{{alert.priority}}</td>
+      </tr>
+      <tr>
+        <th>Date Raised</th>
+        <td>{{alert.dateRaised | date:'medium'}}</td>
+      </tr>
+      <tr>
+        <th>Last Occurrence</th>
+        <td>{{alert.lastOccurred | date:'medium'}}</td>
+      </tr>
+      <tr>
+        <th>Occurrence Count</th>
+        <td>{{alert.occurrenceCount}}</td>
+      </tr>
     </tbody>
   </table>
   <button type="button" class="btn btn-secondary btn-space" (click)="deleteAlert()">Delete</button>

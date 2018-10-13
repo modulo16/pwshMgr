@@ -3,14 +3,18 @@
     <thead class="thead-light">
       <tr>
         <th>Alert Name</th>
+        <th>Priority</th>
         <th>Date Raised</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let alert of alerts">
+      <tr [ngClass]="runThis(alert)" *ngFor="let alert of alerts">
         <td>
           <a [routerLink]="['/alerts', alert._id ]" class="text-dark">{{alert.name}}</a>
         </td>
+        <td>
+            {{alert.priority}}
+          </td>
         <td>
           {{alert.dateRaised | date:'medium'}}
         </td>

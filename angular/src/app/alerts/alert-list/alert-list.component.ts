@@ -18,4 +18,13 @@ export class AlertListComponent implements OnInit {
       .subscribe((alerts: Array<Alert>) => this.alerts = alerts);
   }
 
+  runThis(alert) {
+    if (alert.priority == "High") {
+      return "table-warning"
+    }
+    if (alert.priority == "Urgent") {
+      return "table-danger"
+    }
+  }
+
 }

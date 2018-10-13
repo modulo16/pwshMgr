@@ -12,7 +12,10 @@ router.post('/', checkAuth, async (req, res) => {
         name: req.body.name,
         machineId: req.body.machineId,
         alertPolicyId: req.body.alertPolicyId,
-        dateRaised: Date.now()
+        dateRaised: Date.now(),
+        priority: req.body.priority,
+        occurrenceCount: 1,
+        lastOccurred: Date.now()
     });
     await newAlert.save()
     res.status(status.OK).json(newAlert);

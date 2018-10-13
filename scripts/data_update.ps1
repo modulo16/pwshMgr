@@ -103,6 +103,7 @@ foreach ($Policy in $Return) {
                 'name'          = $AlertText
                 'machineId'     = $Policy.machineId
                 'alertPolicyId' = $Policy._id
+                'priority'      = $Policy.priority
             } | ConvertTo-Json
             Invoke-WebRequest -Uri "$ApiEndpoint/alert" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
             $SlackIntegrations = Invoke-WebRequest -Uri "$ApiEndpoint/integration"
@@ -126,6 +127,7 @@ foreach ($Policy in $Return) {
                 'name'          = $AlertText
                 'machineId'     = $Policy.machineId
                 'alertPolicyId' = $Policy._id
+                'priority'      = $Policy.priority
             } | ConvertTo-Json
             Invoke-WebRequest -Uri "$ApiEndpoint/alert" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
             $SlackIntegrations = Invoke-WebRequest -Uri "$ApiEndpoint/integration"
@@ -148,6 +150,7 @@ foreach ($Policy in $Return) {
                     'name'          = $AlertText
                     'machineId'     = $Policy.machineId
                     'alertPolicyId' = $Policy._id
+                    'priority'      = $Policy.priority
                 } | ConvertTo-Json
                 Invoke-WebRequest -Uri "$ApiEndpoint/alert" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
                 $SlackIntegrations = Invoke-WebRequest -Uri "$ApiEndpoint/integration" -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
@@ -178,6 +181,7 @@ foreach ($Policy in $Return) {
                 'name'          = $AlertText
                 'machineId'     = $Policy.machineId
                 'alertPolicyId' = $Policy._id
+                'priority'      = $Policy.priority
             } | ConvertTo-Json
             Invoke-WebRequest -Uri "$ApiEndpoint/alert" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
         } 
