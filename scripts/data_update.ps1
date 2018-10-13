@@ -1,6 +1,6 @@
 ﻿$ApiEndpoint = "http://localhost:8080/api"
 $ApiCredentials = @{
-    "email" = "admin@admin.admin"
+    "email"    = "admin@admin.admin"
     "password" = "pwshmgradmin"
 } | ConvertTo-Json
 
@@ -14,7 +14,7 @@ $Machines = Get-MdbcData
 
 foreach ($Machine in $Machines) {
     $JobBlock = {
-        param($Machine,$ApiHeaders)
+        param($Machine, $ApiHeaders)
         $ApiEndpoint = "http://localhost:8080/api"
         $ScriptBlock = {
             param($return)
@@ -60,39 +60,44 @@ foreach ($Machine in $Machines) {
 
         $Output = $Null
         $MachineData = $Machine
-            if (Test-Connection -ComputerName $MachineData.ipAddress -bufferSize 4 -Count 1 -ErrorAction SilentlyContinue) {
-        Write-Output "Machine is online"
-        } else {
-
-        write-output "Machine is offline - breaking"
-        Invoke-WebRequest -Uri "$ApiEndpoint/machine/offline/$($MachineData._id)" -Headers $ApiHeaders -UseBasicParsing -Method Post
-        Exit
+        if (Test-Connection -ComputerName $MachineData.ipAddress -bufferSize 4 -Count 1 -ErrorAction SilentlyContinue) {
+            Write-Output "Machine is online"
         }
-            $credentialID = $MachineData.credential
-            $credential = Invoke-WebRequest -Uri "$ApiEndpoint/credential/$credentialID" -UseBasicParsing -Headers $ApiHeaders
-            $Credential = $Credential.Content | ConvertFrom-Json
-            $CredentialPwd = $credential.password | ConvertTo-SecureString -AsPlainText -Force
-            $CredentialUser = $credential.username
-            $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $CredentialUser, $CredentialPwd
-            $Output = Invoke-Command -ComputerName $MachineData.ipAddress -ScriptBlock $ScriptBlock -Credential $credential -ArgumentList $MachineData 
-            $json = $Output | ConvertTo-Json -Compress
-            Invoke-WebRequest -Uri "$ApiEndpoint/machine/$($Machine._id)" -Method Put -Body $json -UseBasicParsing -ContentType 'application/json'-Headers $ApiHeaders
-         #if machine online end
+        else {
+
+            write-output "Machine is offline - breaking"
+            Invoke-WebRequest -Uri "$ApiEndpoint/machine/offline/$($MachineData._id)" -Headers $ApiHeaders -UseBasicParsing -Method Post
+            Exit
+        }
+        $credentialID = $MachineData.credential
+        $credential = Invoke-WebRequest -Uri "$ApiEndpoint/credential/$credentialID" -UseBasicParsing -Headers $ApiHeaders
+        $Credential = $Credential.Content | ConvertFrom-Json
+        $CredentialPwd = $credential.password | ConvertTo-SecureString -AsPlainText -Force
+        $CredentialUser = $credential.username
+        $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $CredentialUser, $CredentialPwd
+        $Output = Invoke-Command -ComputerName $MachineData.ipAddress -ScriptBlock $ScriptBlock -Credential $credential -ArgumentList $MachineData 
+        $json = $Output | ConvertTo-Json -Compress
+        Invoke-WebRequest -Uri "$ApiEndpoint/machine/$($Machine._id)" -Method Put -Body $json -UseBasicParsing -ContentType 'application/json'-Headers $ApiHeaders
+        #if machine online end
 
     } #job block end
 
 
     $MachineId = $Machine._id
-    Start-Job -ScriptBlock $JobBlock -ArgumentList $Machine,$ApiHeaders
+    Start-Job -ScriptBlock $JobBlock -ArgumentList $Machine, $ApiHeaders
 
 } #foreach machine end
 
 Get-Job | Wait-Job | Receive-Job
 
-$Return = Invoke-WebRequest -Uri "$ApiEndpoint/alertpolicy" -Headers $ApiHeaders -UseBasicParsing
-$Return = $Return.Content | ConvertFrom-Json
+$AlertPolicies = Invoke-WebRequest -Uri "$ApiEndpoint/alertpolicy" -Headers $ApiHeaders -UseBasicParsing
+$AlertPolicies = $AlertPolicies.Content | ConvertFrom-Json
+$ActiveAlerts = Invoke-WebRequest -Uri "$ApiEndpoint/alert" -Headers $ApiHeaders -UseBasicParsing
+$ActiveAlerts = $ActiveAlerts.Content | ConvertFrom-Json
 
-foreach ($Policy in $Return) {
+
+foreach ($Policy in $AlertPolicies) {
+    $ActiveAlert = $null
     if ($Policy.type -eq "drive") {
         $Machine = Invoke-WebRequest -Uri "$ApiEndpoint/machine/$($policy.machineId)" -UseBasicParsing -Headers $ApiHeaders
         $Machine = $Machine.Content | ConvertFrom-Json
@@ -105,8 +110,14 @@ foreach ($Policy in $Return) {
                 'alertPolicyId' = $Policy._id
                 'priority'      = $Policy.priority
             } | ConvertTo-Json
+            $ActiveAlert = $ActiveAlerts | Where-Object {($_.machineId -eq $Policy.machineId) -and ($_.alertPolicyId -eq $Policy._id)}
+            if ($ActiveAlert) {
+                Invoke-WebRequest -Uri "$ApiEndpoint/alert/$($ActiveAlert._id)" -Method Put -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
+                Continue
+            }
+
             Invoke-WebRequest -Uri "$ApiEndpoint/alert" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
-            $SlackIntegrations = Invoke-WebRequest -Uri "$ApiEndpoint/integration"
+            $SlackIntegrations = Invoke-WebRequest -Uri "$ApiEndpoint/integration" -Headers $ApiHeaders -UseBasicParsing
             $SlackIntegrations = $SlackIntegrations.Content | ConvertFrom-Json
             foreach ($Slack in $SlackIntegrations) {
                 $SlackPostBody = @{
@@ -122,15 +133,20 @@ foreach ($Policy in $Return) {
         $Machine = $Machine.Content | ConvertFrom-Json
         $ServiceToCheck = $Machine.services | ? {$_.displayName -eq $Policy.item}
         if ($ServiceToCheck.status -eq "Stopped") {
-            $AlertText = """$($ServiceToCheck.displayName)"" is stopped on ""$($Machine.name)"""
+            $AlertText = """$($ServiceToCheck.displayName)"" service is stopped on ""$($Machine.name)"""
             $AlertBody = @{
                 'name'          = $AlertText
                 'machineId'     = $Policy.machineId
                 'alertPolicyId' = $Policy._id
                 'priority'      = $Policy.priority
             } | ConvertTo-Json
+            $ActiveAlert = $ActiveAlerts | Where-Object {($_.machineId -eq $Policy.machineId) -and ($_.alertPolicyId -eq $Policy._id)}
+            if ($ActiveAlert) {
+                Invoke-WebRequest -Uri "$ApiEndpoint/alert/$($ActiveAlert._id)" -Method Put -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
+                Continue
+            }
             Invoke-WebRequest -Uri "$ApiEndpoint/alert" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
-            $SlackIntegrations = Invoke-WebRequest -Uri "$ApiEndpoint/integration"
+            $SlackIntegrations = Invoke-WebRequest -Uri "$ApiEndpoint/integration" -Headers $ApiHeaders -UseBasicParsing
             $SlackIntegrations = $SlackIntegrations.Content | ConvertFrom-Json
             foreach ($Slack in $SlackIntegrations) {
                 $SlackPostBody = @{ 'text' = $AlertText } | ConvertTo-Json
@@ -152,6 +168,11 @@ foreach ($Policy in $Return) {
                     'alertPolicyId' = $Policy._id
                     'priority'      = $Policy.priority
                 } | ConvertTo-Json
+                $ActiveAlert = $ActiveAlerts | Where-Object {($_.machineId -eq $Policy.machineId) -and ($_.alertPolicyId -eq $Policy._id)}
+                if ($ActiveAlert) {
+                    Invoke-WebRequest -Uri "$ApiEndpoint/alert/$($ActiveAlert._id)" -Method Put -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
+                    Continue
+                }
                 Invoke-WebRequest -Uri "$ApiEndpoint/alert" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
                 $SlackIntegrations = Invoke-WebRequest -Uri "$ApiEndpoint/integration" -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
                 $SlackIntegrations = $SlackIntegrations.Content | ConvertFrom-Json
@@ -171,8 +192,7 @@ foreach ($Policy in $Return) {
         $Processes = $Machine.processes | Select-Object name
         foreach ($Process in $Processes) {
             if ($Process.name -eq $policy.item) {
-                $running = $true
-                    
+                $running = $true 
             }
         }
         if (!$running) {
@@ -183,6 +203,11 @@ foreach ($Policy in $Return) {
                 'alertPolicyId' = $Policy._id
                 'priority'      = $Policy.priority
             } | ConvertTo-Json
+            $ActiveAlert = $ActiveAlerts | Where-Object {($_.machineId -eq $Policy.machineId) -and ($_.alertPolicyId -eq $Policy._id)}
+            if ($ActiveAlert) {
+                Invoke-WebRequest -Uri "$ApiEndpoint/alert/$($ActiveAlert._id)" -Method Put -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
+                Continue
+            }
             Invoke-WebRequest -Uri "$ApiEndpoint/alert" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
         } 
         else {
