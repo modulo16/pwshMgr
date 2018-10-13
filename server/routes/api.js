@@ -24,15 +24,15 @@ const Alert = require('../models/alert');
 const Machine = require('../models/machine');
 const checkAuth = require("../middleware/check-auth");
 
-router.use('/machine', machines);
-router.use('/job', jobs);
-router.use('/user', users);
-router.use('/credential', credentials);
-router.use('/application', applications);
-router.use('/script', scripts);
-router.use('/alertpolicy', alertPolicies);
-router.use('/alert', alerts);
-router.use('/integration', integrations);
+router.use('/machines', machines);
+router.use('/jobs', jobs);
+router.use('/users', users);
+router.use('/credentials', credentials);
+router.use('/applications', applications);
+router.use('/scripts', scripts);
+router.use('/alertpolicies', alertPolicies);
+router.use('/alerts', alerts);
+router.use('/integrations', integrations);
 
 router.get('/count', async (req, res) => {
     const onlineMachines = await Machine.count({ status: 'Online' });

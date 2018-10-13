@@ -34,7 +34,7 @@ export class AuthService {
   createUser(email: string, password: string) {
     const authData: AuthData = { email: email, password: password };
     this.http
-      .post("/api/user/register", authData)
+      .post("/api/users/register", authData)
       .subscribe(() => {
         this.router.navigate(["/"]);
       }, error => {
@@ -46,7 +46,7 @@ export class AuthService {
     const authData: AuthData = { email: email, password: password };
     this.http
       .post<{ token: string; expiresIn: number; userId: string }>(
-        "/api/user/login",
+        "/api/users/login",
         authData
       )
       .subscribe(response => {
@@ -94,7 +94,7 @@ export class AuthService {
     this.userId = null;
     clearTimeout(this.tokenTimer);
     this.clearAuthData();
-    this.router.navigate(["/"]);
+    this.router.navigate(["/login"]);
   }
 
   private setAuthTimer(duration: number) {

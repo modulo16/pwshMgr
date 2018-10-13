@@ -12,23 +12,23 @@ export class IntegrationService {
   constructor(private http: HttpClient) {}
 
     getAllIntegrations(): Observable<SlackIntegration[]> {
-      return this.http.get<SlackIntegration[]>('/api/integration');
+      return this.http.get<SlackIntegration[]>('/api/integrations');
     }
   
     getIntegrationById(integrationID): Observable<SlackIntegration> {
-      return this.http.get<SlackIntegration>('/api/integration/' + integrationID)
+      return this.http.get<SlackIntegration>('/api/integrations/' + integrationID)
     }
   
     postIntegration(integration: SlackIntegration): Observable<SlackIntegration> {
-      return this.http.post<SlackIntegration>('/api/integration/', integration);
+      return this.http.post<SlackIntegration>('/api/integrations/', integration);
     }
   
     updateIntegration(integration: SlackIntegration): Observable<SlackIntegration> {
-      return this.http.put<SlackIntegration>('/api/integration', integration);
+      return this.http.put<SlackIntegration>('/api/integrations', integration);
     }
   
     deleteIntegration(integrationID) {
-      return this.http.delete('/api/integration/' + integrationID);
+      return this.http.delete('/api/integrations/' + integrationID);
     }
 
 }
