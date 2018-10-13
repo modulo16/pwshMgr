@@ -22,7 +22,8 @@ export class NewAlertComponent implements OnInit {
     this.newDiskSpaceAlertForm = this.formBuilder.group({
       'machineId': ['', [Validators.required]],
       'item': ['', [Validators.required]],
-      'threshold': ['', [Validators.required]]
+      'threshold': ['', [Validators.required]],
+      'priority': ['', [Validators.required]]
     })
    }
 

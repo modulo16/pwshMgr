@@ -17,7 +17,15 @@
         </select>
       </div>
 
-
+      <div class="form-group">
+          <label for="exampleFormControlSelect1">Priority</label>
+          <select class="form-control" [formControl]="newWindowsServiceAlertForm.controls['priority']" required>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Urgent">Urgent</option>
+          </select>
+        </div>
       <button type="Start" class="btn btn-success" [disabled]="!newWindowsServiceAlertForm.valid">Submit</button>
     </form>
   </div>

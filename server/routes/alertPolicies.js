@@ -16,7 +16,8 @@ router.post('/', checkAuth, async (req, res) => {
             type: data.type,
             machineId: data.machineId,
             threshold: data.threshold,
-            item: data.item
+            item: data.item,
+            priority: data.priority
         });
     }
 
@@ -26,7 +27,8 @@ router.post('/', checkAuth, async (req, res) => {
             type: data.type,
             machineId: data.machineId,
             threshold: data.threshold,
-            item: data.item
+            item: data.item,
+            priority: data.priority
         });
     }
     if (req.body.type == "process" && req.body.threshold == "is-running") {
@@ -35,7 +37,8 @@ router.post('/', checkAuth, async (req, res) => {
             type: data.type,
             machineId: data.machineId,
             threshold: data.threshold,
-            item: data.item
+            item: data.item,
+            priority: data.priority
         });
     }
     if (req.body.type == "process" && req.body.threshold == "not-running") {
@@ -44,7 +47,8 @@ router.post('/', checkAuth, async (req, res) => {
             type: data.type,
             machineId: data.machineId,
             threshold: data.threshold,
-            item: data.item
+            item: data.item,
+            priority: data.priority
         });
     }
     await newAlertPolicy.save()

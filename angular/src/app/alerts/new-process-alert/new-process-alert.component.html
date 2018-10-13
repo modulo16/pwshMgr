@@ -20,6 +20,15 @@
           <option value="not-running">Not Running</option>
         </select>
       </div>
+      <div class="form-group">
+          <label for="exampleFormControlSelect1">Priority</label>
+          <select class="form-control" [formControl]="newProcessAlertForm.controls['priority']" required>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Urgent">Urgent</option>
+          </select>
+        </div>
       <button type="Start" class="btn btn-success" [disabled]="!newProcessAlertForm.valid">Submit</button>
     </form>
   </div>

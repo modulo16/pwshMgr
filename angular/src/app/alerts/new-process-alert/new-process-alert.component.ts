@@ -29,7 +29,8 @@ export class NewProcessAlertComponent implements OnInit {
     this.newProcessAlertForm = this.formBuilder.group({
       'machineId': ['', [Validators.required]],
       'item': ['', [Validators.required]],
-      'threshold': ['', [Validators.required]]
+      'threshold': ['', [Validators.required]],
+      'priority': ['', [Validators.required]]
     })
 
    }

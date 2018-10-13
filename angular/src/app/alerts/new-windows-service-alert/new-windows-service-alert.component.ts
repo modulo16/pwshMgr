@@ -26,7 +26,8 @@ export class NewWindowsServiceAlertComponent implements OnInit {
 
     this.newWindowsServiceAlertForm = this.formBuilder.group({
       'machineId': ['', [Validators.required]],
-      'item': ['', [Validators.required]]
+      'item': ['', [Validators.required]],
+      'priority': ['', [Validators.required]]
     })
 
   }
