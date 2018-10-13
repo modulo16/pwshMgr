@@ -1,3 +1,17 @@
-<p>
-  integration-detail works!
-</p>
+<div class="container-fluid pt-3">
+  <table class="table table-bordered table-hover table-sm">
+    <tbody>
+      <tr>
+        <th>Integration Name</th>
+        <td>{{integration.name}}</td>
+      </tr>
+      <tr>
+        <th>Type</th>
+        <td>{{integration.type}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <button type="button" class="btn btn-secondary btn-space" (click)="deleteIntegration()">Delete</button>
+  <br>
+  <br>
+</div>

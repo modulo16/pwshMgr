@@ -3,7 +3,8 @@ var Schema = mongoose.Schema;
 
 var slackIntegrationSchema = new Schema({
     name: String,
-    webHook: String
+    webHook: String,
+    type: String
 });
 
 var SlackIntegration = mongoose.model('SlackIntegration', slackIntegrationSchema);

@@ -160,6 +160,10 @@ import { DashboardService } from './dashboard/dashboard.service';
         component: CredentialDetailsComponent
       },
       {
+        path: 'integrations/:id',
+        component: IntegrationDetailComponent
+      },
+      {
         path: 'alerts/:id',
         component: AlertDetailsComponent
       },

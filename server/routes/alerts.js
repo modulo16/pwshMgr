@@ -22,11 +22,11 @@ router.post('/', checkAuth, async (req, res) => {
 });
 
 router.get('/', checkAuth, async (req, res) => {
-    const alerts = await Alert.find();
+    const alerts = await Alert.find().sort({lastOccurred: 'desc'});
     res.send(alerts);
 });
 
-router.delete('/:id', checkAuth, async (req, res) => {
+router.delete('/:id', checkAuth, validateObjectId, async (req, res) => {
     await Alert.findByIdAndRemove(req.params.id);
     res.status(status.OK).json({ message: 'SUCCESS' });
 });

@@ -173,7 +173,7 @@ router.get('/subjobs/:subJobId', checkAuth, (req, res) => {
     });
 });
 
-router.delete('/:id', checkAuth, async (req, res) => {
+router.delete('/:id', checkAuth, validateObjectId, async (req, res) => {
     await Job.findByIdAndRemove(req.params.id);
     res.status(status.OK).json({ message: 'SUCCESS' });
 });

@@ -20,7 +20,6 @@ router.post('/', checkAuth, async (req, res) => {
             priority: data.priority
         });
     }
-
     if (req.body.type == "service") {
         var newAlertPolicy = AlertPolicy({
             name: `"${req.body.item}" service stopped on "${machine.name}"`,
@@ -66,7 +65,7 @@ router.get('/', checkAuth, async (req, res) => {
     res.send(alertPolicies);
 });
 
-router.delete('/:alertPolicyId', checkAuth, async (req, res) => {
+router.delete('/:alertPolicyId', checkAuth, validateObjectId, async (req, res) => {
     await AlertPolicy.findByIdAndRemove(req.params.alertPolicyId);
     res.status(status.OK).json({ message: 'SUCCESS' });
 });

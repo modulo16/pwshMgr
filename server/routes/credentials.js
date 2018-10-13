@@ -30,7 +30,7 @@ router.get('/:id', checkAuth, validateObjectId, async (req, res) => {
     res.send(credential);
 });
 
-router.delete('/:id', checkAuth, async (req, res) => {
+router.delete('/:id', checkAuth, validateObjectId, async (req, res) => {
     await Creds.findByIdAndRemove(req.params.id);
     res.status(status.OK).json({ message: 'SUCCESS' });
 });
