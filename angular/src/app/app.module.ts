@@ -28,7 +28,7 @@ import { environment } from '../environments/environment';
 import { LoginComponent } from './login/login.component';
 import { ScriptService } from './script/script.service';
 import { NewScriptComponent } from './script/new-script/new-script.component';
-import { NewAlertComponent } from './alerts/new-alert/new-alert.component';
+import { NewDiskAlertComponent } from './alerts/new-disk-alert/new-disk-alert.component';
 import { AlertPolicyListComponent } from './alerts/alert-policy-list/alert-policy-list.component';
 import { AlertListComponent } from './alerts/alert-list/alert-list.component';
 import { NewWindowsServiceAlertComponent } from './alerts/new-windows-service-alert/new-windows-service-alert.component';
@@ -69,7 +69,7 @@ import { DashboardService } from './dashboard/dashboard.service';
     NewUserComponent,
     LoginComponent,
     NewScriptComponent,
-    NewAlertComponent,
+    NewDiskAlertComponent,
     AlertPolicyListComponent,
     AlertListComponent,
     NewWindowsServiceAlertComponent,
@@ -109,7 +109,7 @@ import { DashboardService } from './dashboard/dashboard.service';
       },
       {
         path: 'alerts/new-disk-space',
-        component: NewAlertComponent
+        component: NewDiskAlertComponent
       },
       {
         path: 'alerts/new/process',

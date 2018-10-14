@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NewAlertComponent } from './new-alert.component';
+import { NewDiskAlertComponent } from './new-disk-alert.component';
 
-describe('NewAlertComponent', () => {
-  let component: NewAlertComponent;
-  let fixture: ComponentFixture<NewAlertComponent>;
+describe('NewDiskAlertComponent', () => {
+  let component: NewDiskAlertComponent;
+  let fixture: ComponentFixture<NewDiskAlertComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewAlertComponent ]
+      declarations: [ NewDiskAlertComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NewAlertComponent);
+    fixture = TestBed.createComponent(NewDiskAlertComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

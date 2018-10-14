@@ -7,11 +7,11 @@ import { AlertService } from '../alert.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-new-alert',
-  templateUrl: './new-alert.component.html',
-  styleUrls: ['./new-alert.component.css']
+  selector: 'app-new-disk-alert',
+  templateUrl: './new-disk-alert.component.html',
+  styleUrls: ['./new-disk-alert.component.css']
 })
-export class NewAlertComponent implements OnInit {
+export class NewDiskAlertComponent implements OnInit {
 
   newDiskSpaceAlertForm: FormGroup;
   machines: Machine[];
