@@ -39,13 +39,13 @@
       </tr>
     </tbody>
   </table>
-  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="show=!show">{{show ? 'Hide Applications' : 'Show Applications'}}</button>
-  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="showProcesses=!showProcesses">{{showProcesses ? 'Hide Processes' : 'Show Processes'}}</button>
-  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="showServices=!showServices">{{showServices ? 'Hide Services' : 'Show Services'}}</button>
-  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="showDrives=!showDrives">{{showDrives ? 'Hide Drives' : 'Show Drives'}}</button>
-  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="showJobs()" *ngIf="!jobs">Show Jobs</button>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="show=!show">{{show ? 'Hide Applications' : 'Applications'}}</button>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="showProcesses=!showProcesses">{{showProcesses ? 'Hide Processes' : 'Processes'}}</button>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="showServices=!showServices">{{showServices ? 'Hide Services' : 'Services'}}</button>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="showDrives=!showDrives">{{showDrives ? 'Hide Drives' : 'Drives'}}</button>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="showJobs()" *ngIf="!jobs">Jobs</button>
   <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="hideJobs()" *ngIf="jobs">Hide Jobs</button>
-  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="showAlerts()" *ngIf="!alerts">Show Alerts</button>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="showAlerts()" *ngIf="!alerts">Alerts</button>
   <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="hideAlerts()" *ngIf="alerts">Hide Alerts</button>
   <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="changeCredential(editTemplate)">Credential</button>
   <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="deleteMachine()">Delete</button>

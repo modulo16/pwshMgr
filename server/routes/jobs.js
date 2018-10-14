@@ -15,7 +15,7 @@ router.post('/', checkAuth, async (req, res) => {
     if (req.body.script) {
         const script = await Script.findById(req.body.script)
         var newJob = Job({
-            name: `Deploy ${script.name} script to ${machine.name}`,
+            name: `Run ${script.name} script on ${machine.name}`,
             machine: req.body.machine,
             script: req.body.script,
             status: "Scheduled",

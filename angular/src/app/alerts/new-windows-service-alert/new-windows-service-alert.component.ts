@@ -39,10 +39,8 @@ export class NewWindowsServiceAlertComponent implements OnInit {
   }
 
   onChange() {
-    console.log(this.selectedMachineId)
     this.machineService.getMachineById(this.selectedMachineId)
       .subscribe((machine: Machine) => this.selectedMachine = machine)
-    console.log(this.selectedMachine)
   }
 
   ngOnInit() {

@@ -70,8 +70,8 @@ router.get('/', checkAuth, async (req, res) => {
     res.send(alertPolicies);
 });
 
-router.delete('/:alertPolicyId', checkAuth, validateObjectId, async (req, res) => {
-    await AlertPolicy.findByIdAndRemove(req.params.alertPolicyId);
+router.delete('/:id', checkAuth, validateObjectId, async (req, res) => {
+    await AlertPolicy.findByIdAndRemove(req.params.id);
     res.status(status.OK).json({ message: 'SUCCESS' });
 });
 

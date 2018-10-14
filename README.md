@@ -30,7 +30,7 @@ I am looking for testers, so please get in touch if interested: pwshmgr@gmail.co
 ![Imgur](https://i.imgur.com/Jh78TFs.png)
 
 #### Machine details
-![Imgur](https://i.imgur.com/iPkfSnt.png)
+![Imgur](https://i.imgur.com/qSSLAzy.png)
 
 #### Add new script
 ![Imgur](https://i.imgur.com/oAa4u4Z.png)
@@ -44,3 +44,5 @@ I am looking for testers, so please get in touch if interested: pwshmgr@gmail.co
 * Switch to PowerShell Core so it can run on Linux
 * Ability to schedule scripts
 * Ability to add machines to groups so jobs and alert policies can be created against multiple machines
+* PagerDuty Integration
+* Email Integration
