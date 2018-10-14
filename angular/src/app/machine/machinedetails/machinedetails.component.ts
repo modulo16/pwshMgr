@@ -13,6 +13,8 @@ import { CredentialService } from '../../credentials/credential.service';
 import { Credential } from '../../credentials/credential.model';
 import * as io from 'socket.io-client';
 import { JobService } from '../../jobs/jobs.service';
+import { Alert } from '../../alerts/alert.model';
+import { AlertService } from '../../alerts/alert.service';
 
 @Component({
   selector: 'app-machinedetails',
@@ -41,6 +43,7 @@ export class MachinedetailsComponent implements OnInit, OnDestroy {
   credentials: Credential[];
   refreshing: string;
   jobs: Job[];
+  alerts: Alert[];
   showJobsDiv: Boolean
 
   constructor(
@@ -88,9 +91,19 @@ export class MachinedetailsComponent implements OnInit, OnDestroy {
       .subscribe((jobs: Array<Job>) => this.jobs = jobs)
   }
 
+  showAlerts() {
+    this.machineService.getAlertByMachine(this.id)
+      .subscribe((alerts: Array<Alert>) => this.alerts = alerts)
+  }
+
   hideJobs() {
     this.jobs = null
   }
+
+  hideAlerts() {
+    this.alerts = null
+  }
+
 
   changeCredential(template: TemplateRef<any>) {
     this.credentialService.getAllCredentials()

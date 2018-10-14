@@ -6,6 +6,7 @@ const Group = require('../models/groups');
 const mongoose = require('mongoose');
 const status = require('http-status');
 const Job = require('../models/job');
+const Alert = require('../models/alert');
 const checkAuth = require("../middleware/check-auth");
 
 router.get('/count', (req, res) => {
@@ -87,6 +88,18 @@ router.get('/jobs/:id', checkAuth, (req, res) => {
         if (err) return res.status(status.BAD_REQUEST).json(err);
         res.status(status.OK).json(jobs);
     });
+});
+
+router.get('/alerts/:id', checkAuth, validateObjectId, (req, res) => {
+    Alert.find({ machineId: req.params.id }, '_id name lastOccurred priority', function (err, alerts) {
+        if (err) return res.status(status.BAD_REQUEST).json(err);
+        res.status(status.OK).json(alerts);
+    });
+});
+
+router.get('/alerts/:id', checkAuth, validateObjectId, async (req, res) => {
+    const alerts = await Alert.find({ machineId: req.params.id }, '_id name lastOccurred priority');
+    res.send(alerts);
 });
 
 module.exports = router;

@@ -12,8 +12,8 @@ export class AlertService {
   constructor(private http: HttpClient) {}
 
 
-  getAllAlertPolicies(): Observable<AlertPolicy[]> {
-    return this.http.get<AlertPolicy[]>('/api/alertpolicies');
+  getAllAlertPolicies(): Observable<AlertPolicyView[]> {
+    return this.http.get<AlertPolicyView[]>('/api/alertpolicies');
   }
 
   getAllAlerts(): Observable<Alert[]> {

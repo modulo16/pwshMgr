@@ -8,6 +8,7 @@ const Machine = require('../models/machine');
 const checkAuth = require("../middleware/check-auth");
 
 router.post('/', checkAuth, async (req, res) => {
+    console.log(req.body)
     var data = req.body;
     const machine = await Machine.findById(req.body.machineId);
     if (req.body.type == "drive") {
@@ -17,7 +18,8 @@ router.post('/', checkAuth, async (req, res) => {
             machineId: data.machineId,
             threshold: data.threshold,
             item: data.item,
-            priority: data.priority
+            priority: data.priority,
+            integrations: data.integrations
         });
     }
     if (req.body.type == "service") {
@@ -27,7 +29,8 @@ router.post('/', checkAuth, async (req, res) => {
             machineId: data.machineId,
             threshold: data.threshold,
             item: data.item,
-            priority: data.priority
+            priority: data.priority,
+            integrations: data.integrations
         });
     }
     if (req.body.type == "process" && req.body.threshold == "is-running") {
@@ -37,7 +40,8 @@ router.post('/', checkAuth, async (req, res) => {
             machineId: data.machineId,
             threshold: data.threshold,
             item: data.item,
-            priority: data.priority
+            priority: data.priority,
+            integrations: data.integrations
         });
     }
     if (req.body.type == "process" && req.body.threshold == "not-running") {
@@ -47,7 +51,8 @@ router.post('/', checkAuth, async (req, res) => {
             machineId: data.machineId,
             threshold: data.threshold,
             item: data.item,
-            priority: data.priority
+            priority: data.priority,
+            integrations: data.integrations
         });
     }
     await newAlertPolicy.save()

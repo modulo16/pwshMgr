@@ -2,6 +2,7 @@ import { Machine, Job } from './machine.model'
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
+import { Alert } from '../alerts/alert.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,10 @@ export class MachineService {
 
     getJobByMachine(machineID): Observable<Job[]> {
       return this.http.get<Job[]>('/api/machines/jobs/' + machineID);
+    }
+
+    getAlertByMachine(machineID): Observable<Alert[]> {
+      return this.http.get<Alert[]>('/api/machines/alerts/' + machineID)
     }
 
 }

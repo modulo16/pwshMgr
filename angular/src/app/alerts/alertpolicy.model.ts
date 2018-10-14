@@ -4,7 +4,8 @@ export interface AlertPolicy {
     drive: string,
     threshold: string,
     type: string,
-    priority: string
+    priority: string,
+    integrations: String
 }
 
 export interface AlertPolicyView {

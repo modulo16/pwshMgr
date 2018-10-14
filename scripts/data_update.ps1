@@ -14,8 +14,7 @@ $Machines = Get-MdbcData
 
 foreach ($Machine in $Machines) {
     $JobBlock = {
-        param($Machine, $ApiHeaders)
-        $ApiEndpoint = "http://localhost:8080/api"
+        param($Machine, $ApiHeaders, $ApiEndpoint)
         $ScriptBlock = {
             param($return)
             $publicip = Invoke-WebRequest -Uri ipinfo.io/ip -UseBasicParsing
@@ -82,9 +81,7 @@ foreach ($Machine in $Machines) {
 
     } #job block end
 
-
-    $MachineId = $Machine._id
-    Start-Job -ScriptBlock $JobBlock -ArgumentList $Machine, $ApiHeaders
+    Start-Job -ScriptBlock $JobBlock -ArgumentList $Machine, $ApiHeaders, $ApiEndpoint
 
 } #foreach machine end
 
@@ -115,23 +112,23 @@ foreach ($Policy in $AlertPolicies) {
                 Invoke-WebRequest -Uri "$ApiEndpoint/alerts/$($ActiveAlert._id)" -Method Put -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
                 Continue
             }
-
             Invoke-WebRequest -Uri "$ApiEndpoint/alerts" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
-            $SlackIntegrations = Invoke-WebRequest -Uri "$ApiEndpoint/integrations" -Headers $ApiHeaders -UseBasicParsing
-            $SlackIntegrations = $SlackIntegrations.Content | ConvertFrom-Json
+            $SlackIntegrations = $Policy.integrations
             foreach ($Slack in $SlackIntegrations) {
+                Write-Output $Slack
+                $SlackData = Invoke-WebRequest -Uri "$ApiEndpoint/integrations/$Slack" -Method Get -UseBasicParsing -Headers $ApiHeaders
+                $SlackData = $SlackData.Content | ConvertFrom-Json
                 $SlackPostBody = @{
                     'text' = $AlertText
                 } | ConvertTo-Json
-                Invoke-WebRequest -Uri $Slack.webHook -ContentType 'application/json' -Body $SlackPostBody -Method Post -UseBasicParsing -Headers $ApiHeaders
+                Invoke-WebRequest -Uri $SlackData.webHook -ContentType 'application/json' -Body $SlackPostBody -Method Post -UseBasicParsing
             }
         }
     }
-
     if ($Policy.type -eq "service") {
         $Machine = Invoke-WebRequest -Uri "$ApiEndpoint/machines/$($policy.machineId)" -UseBasicParsing -Headers $ApiHeaders
         $Machine = $Machine.Content | ConvertFrom-Json
-        $ServiceToCheck = $Machine.services | ? {$_.displayName -eq $Policy.item}
+        $ServiceToCheck = $Machine.services | Where-Object {$_.displayName -eq $Policy.item}
         if ($ServiceToCheck.status -eq "Stopped") {
             $AlertText = """$($ServiceToCheck.displayName)"" service is stopped on ""$($Machine.name)"""
             $AlertBody = @{
@@ -146,15 +143,18 @@ foreach ($Policy in $AlertPolicies) {
                 Continue
             }
             Invoke-WebRequest -Uri "$ApiEndpoint/alerts" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
-            $SlackIntegrations = Invoke-WebRequest -Uri "$ApiEndpoint/integrations" -Headers $ApiHeaders -UseBasicParsing
-            $SlackIntegrations = $SlackIntegrations.Content | ConvertFrom-Json
+            $SlackIntegrations = $Policy.integrations
             foreach ($Slack in $SlackIntegrations) {
-                $SlackPostBody = @{ 'text' = $AlertText } | ConvertTo-Json
-                Invoke-WebRequest -Uri $Slack.webHook -ContentType 'application/json' -Body $SlackPostBody -Method Post -UseBasicParsing -Headers $ApiHeaders
+                Write-Output $Slack
+                $SlackData = Invoke-WebRequest -Uri "$ApiEndpoint/integrations/$Slack" -Method Get -UseBasicParsing -Headers $ApiHeaders
+                $SlackData = $SlackData.Content | ConvertFrom-Json
+                $SlackPostBody = @{
+                    'text' = $AlertText
+                } | ConvertTo-Json
+                Invoke-WebRequest -Uri $SlackData.webHook -ContentType 'application/json' -Body $SlackPostBody -Method Post -UseBasicParsing
             }
         }
     }
-
     if ($Policy.type -eq "process" -And $Policy.threshold -eq "is-running") {
         $Machine = Invoke-WebRequest -Uri "$ApiEndpoint/machines/$($policy.machineId)" -UseBasicParsing -Headers $ApiHeaders
         $Machine = $Machine.Content | ConvertFrom-Json
@@ -174,19 +174,21 @@ foreach ($Policy in $AlertPolicies) {
                     Continue
                 }
                 Invoke-WebRequest -Uri "$ApiEndpoint/alerts" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
-                $SlackIntegrations = Invoke-WebRequest -Uri "$ApiEndpoint/integrations" -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
-                $SlackIntegrations = $SlackIntegrations.Content | ConvertFrom-Json
+                $SlackIntegrations = $Policy.integrations
                 foreach ($Slack in $SlackIntegrations) {
-                    $SlackPostBody = @{ 'text' = $AlertText } | ConvertTo-Json
-                    Invoke-WebRequest -Uri $Slack.webHook -ContentType 'application/json' -Body $SlackPostBody -Method Post -UseBasicParsing -Headers $ApiHeaders
+                    Write-Output $Slack
+                    $SlackData = Invoke-WebRequest -Uri "$ApiEndpoint/integrations/$Slack" -Method Get -UseBasicParsing -Headers $ApiHeaders
+                    $SlackData = $SlackData.Content | ConvertFrom-Json
+                    $SlackPostBody = @{
+                        'text' = $AlertText
+                    } | ConvertTo-Json
+                    Invoke-WebRequest -Uri $SlackData.webHook -ContentType 'application/json' -Body $SlackPostBody -Method Post -UseBasicParsing
                 }
                 break
             }
         }
     }
-
     if ($Policy.type -eq "process" -And $Policy.threshold -eq "not-running") {
-        #get machine
         $Machine = Invoke-WebRequest -Uri "$ApiEndpoint/machines/$($policy.machineId)" -UseBasicParsing -Headers $ApiHeaders
         $Machine = $Machine.Content | ConvertFrom-Json
         $Processes = $Machine.processes | Select-Object name
@@ -209,6 +211,16 @@ foreach ($Policy in $AlertPolicies) {
                 Continue
             }
             Invoke-WebRequest -Uri "$ApiEndpoint/alerts" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
+            $SlackIntegrations = $Policy.integrations
+            foreach ($Slack in $SlackIntegrations) {
+                Write-Output $Slack
+                $SlackData = Invoke-WebRequest -Uri "$ApiEndpoint/integrations/$Slack" -Method Get -UseBasicParsing -Headers $ApiHeaders
+                $SlackData = $SlackData.Content | ConvertFrom-Json
+                $SlackPostBody = @{
+                    'text' = $AlertText
+                } | ConvertTo-Json
+                Invoke-WebRequest -Uri $SlackData.webHook -ContentType 'application/json' -Body $SlackPostBody -Method Post -UseBasicParsing
+            }
         } 
         else {
             $running = $null

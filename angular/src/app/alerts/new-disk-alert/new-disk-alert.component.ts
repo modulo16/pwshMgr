@@ -5,39 +5,51 @@ import { Machine } from '../../machine/machine.model';
 import { AlertPolicy } from '../alertpolicy.model';
 import { AlertService } from '../alert.service';
 import { Router } from '@angular/router';
+import { SlackIntegration } from '../../integrations/integration.model';
+import { IntegrationService } from '../../integrations/integration.service';
 
 @Component({
   selector: 'app-new-disk-alert',
   templateUrl: './new-disk-alert.component.html',
   styleUrls: ['./new-disk-alert.component.css']
 })
+
 export class NewDiskAlertComponent implements OnInit {
 
   newDiskSpaceAlertForm: FormGroup;
   machines: Machine[];
   selectedMachine: Machine;
   selectedMachineId: String;
+  integrations: SlackIntegration[]
 
-  constructor(private machineService: MachineService, private router: Router, private formBuilder: FormBuilder, private alertService: AlertService) {
+  constructor(
+    private machineService: MachineService,
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private alertService: AlertService,
+    private integrationService: IntegrationService
+  ) {
     this.newDiskSpaceAlertForm = this.formBuilder.group({
       'machineId': ['', [Validators.required]],
       'item': ['', [Validators.required]],
       'threshold': ['', [Validators.required]],
-      'priority': ['', [Validators.required]]
+      'priority': ['', [Validators.required]],
+      'integrations': ['', [Validators.required]]
     })
-   }
-
-   onChange() {
-    console.log(this.selectedMachineId)
-    this.machineService.getMachineById(this.selectedMachineId)
-      .subscribe((machine:Machine) => this.selectedMachine = machine)
-      console.log(this.selectedMachine)
   }
 
+  onChange() {
+    console.log(this.selectedMachineId)
+    this.machineService.getMachineById(this.selectedMachineId)
+      .subscribe((machine: Machine) => this.selectedMachine = machine)
+    console.log(this.selectedMachine)
+  }
 
   ngOnInit() {
     this.machineService.getAllMachines()
-    .subscribe((machines: Array<Machine>) => this.machines = machines)
+      .subscribe((machines: Array<Machine>) => this.machines = machines)
+    this.integrationService.getAllIntegrations()
+      .subscribe((integrations: Array<SlackIntegration>) => this.integrations = integrations)
   }
 
   submitForm(newDiskSpaceAlert: AlertPolicy) {
@@ -47,6 +59,5 @@ export class NewDiskAlertComponent implements OnInit {
         this.router.navigate(['alertpolicies/'])
       });
   }
-
 
 }
