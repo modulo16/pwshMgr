@@ -27,17 +27,16 @@ I am looking for testers, so please get in touch if interested: pwshmgr@gmail.co
 
 --------------
 #### Machines
-![Imgur](https://i.imgur.com/Jh78TFs.png)
+![Imgur](https://i.imgur.com/GXVZrg4.png)
 
 #### Machine details
 ![Imgur](https://i.imgur.com/qSSLAzy.png)
 
-#### Add new script
-![Imgur](https://i.imgur.com/oAa4u4Z.png)
+#### Active Alerts
+![Imgur](https://i.imgur.com/2WikTyZ.png)
 
 #### Running job
-![Imgur](https://i.imgur.com/KpisGOW.png)
-
+![Imgur](https://i.imgur.com/EcyXFJl.png)
 
 ## Planned
 * Package into installable executable
