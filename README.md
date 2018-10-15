@@ -27,7 +27,7 @@ I am looking for testers, so please get in touch if interested: pwshmgr@gmail.co
 
 --------------
 #### Machines
-![Imgur](https://i.imgur.com/GXVZrg4.png)
+![Imgur](https://i.imgur.com/OOaJbDO.png)
 
 #### Machine details
 ![Imgur](https://i.imgur.com/qSSLAzy.png)
