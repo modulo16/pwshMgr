@@ -16,7 +16,6 @@ I am looking for testers, so please get in touch if interested: pwshmgr@gmail.co
 * Install apps from the public Chocolatey repository
 * View information on machines including applications, running processes, disk space usage and availability
 * Generate alerts and send to Slack via webhook
-* Realtime page updates on machine details and running jobs
 
 ## Stack
 * NodeJS 10.11.0
