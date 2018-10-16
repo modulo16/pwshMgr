@@ -1,4 +1,5 @@
-﻿$ApiEndpoint = "http://localhost:8080/api"
+﻿$StopWatch = [System.Diagnostics.Stopwatch]::startNew()
+$ApiEndpoint = "http://localhost:8080/api"
 $ApiCredentials = @{
     "email"    = "admin@admin.admin"
     "password" = "pwshmgradmin"
@@ -209,3 +210,5 @@ foreach ($Machine in $Machines) {
 } #foreach machine end
 
 Get-Job | Wait-Job | Receive-Job
+$StopWatch.Stop()
+$StopWatch.Elapsed
