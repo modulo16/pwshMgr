@@ -9,10 +9,10 @@
           <option *ngFor="let machine of machines" [value]="machine._id">{{machine.name}}</option>
         </select>
       </div>
-      <div class="form-group" *ngIf="selectedMachine">
+      <div class="form-group" *ngIf="drives">
         <label for="exampleFormControlSelect1">Drive</label>
         <select class="form-control" [formControl]="newDiskSpaceAlertForm.controls['item']" required>
-          <option *ngFor="let drive of selectedMachine.drives" [value]="drive.name">{{drive.name}}</option>
+          <option *ngFor="let drive of drives.drives" [value]="drive.name">{{drive.name}}</option>
         </select>
         <label for="exampleFormControlSelect1">Alert when free space below (GB)</label>
         <input class="form-control" [formControl]="newDiskSpaceAlertForm.controls['threshold']" type="text" required>

@@ -27,7 +27,7 @@ bcrypt.hash("pwshmgradmin", 10)
 
 cron.schedule('*/10 * * * *', () => {
   let scriptPath = path.join(__dirname, './scripts/data_update.ps1');
-  exec(`powershell -file "${scriptPath}"`, (err, stdout, stderr) => {
+  exec(`pwsh -file "${scriptPath}"`, (err, stdout, stderr) => {
     if (err) {
       console.error(err);
       return;

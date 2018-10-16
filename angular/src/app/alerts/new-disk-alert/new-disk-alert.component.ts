@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { MachineService } from '../../machine/machine.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Machine } from '../../machine/machine.model';
+import { Machine, Drive, DriveDetails } from '../../machine/machine.model';
 import { AlertPolicy } from '../alertpolicy.model';
 import { AlertService } from '../alert.service';
 import { Router } from '@angular/router';
 import { SlackIntegration } from '../../integrations/integration.model';
 import { IntegrationService } from '../../integrations/integration.service';
+
 
 @Component({
   selector: 'app-new-disk-alert',
@@ -21,6 +22,7 @@ export class NewDiskAlertComponent implements OnInit {
   selectedMachine: Machine;
   selectedMachineId: String;
   integrations: SlackIntegration[]
+  drives: DriveDetails
 
   constructor(
     private machineService: MachineService,
@@ -39,10 +41,8 @@ export class NewDiskAlertComponent implements OnInit {
   }
 
   onChange() {
-    console.log(this.selectedMachineId)
-    this.machineService.getMachineById(this.selectedMachineId)
-      .subscribe((machine: Machine) => this.selectedMachine = machine)
-    console.log(this.selectedMachine)
+    this.machineService.getMachineDrives(this.selectedMachineId)
+      .subscribe((drives: DriveDetails) => this.drives = drives)
   }
 
   ngOnInit() {

@@ -20,7 +20,13 @@ router.get('/count', (req, res) => {
 });
 
 router.get('/:id', checkAuth, validateObjectId, async (req, res) => {
-    const machine = await Machine.findById(req.params.id);
+    const machine = await Machine.findById(req.params.id, '-services -applications -processes');
+    if (!machine) return res.status(404).send('The machine with the given ID was not found.');
+    res.send(machine);
+});
+
+router.get('/:id/drives', validateObjectId, async (req, res) => {
+    const machine = await Machine.findById(req.params.id, 'drives -_id');
     if (!machine) return res.status(404).send('The machine with the given ID was not found.');
     res.send(machine);
 });
@@ -40,35 +46,28 @@ router.delete('/:id', checkAuth,validateObjectId, async (req, res) => {
 });
 
 router.get('/', checkAuth, async (req, res) => {
-    const machines = await Machine.find({},'name _id operatingSystem status ipAddress');
+    const machines = await Machine.find({},'name _id operatingSystem status ipAddress credential');
     res.send(machines);
 });
 
 router.put('/:id', checkAuth, validateObjectId, async (req, res) => {
-    var data = req.body;
-    var machineToUpdate = {
-        name: data.name,
-        serialNumber: data.serialNumber,
-        operatingSystem: data.operatingSystem,
-        applications: data.applications,
-        services: data.services,
-        make: data.make,
-        model: data.model,
-        architecture: data.architecture,
-        dateAdded: data.dateAdded,
-        dateUpdated: Date.now(),
-        publicIp: data.publicIp,
-        domain: data.domain,
-        credential: data.credential,
-        services: data.services,
-        drives: data.drives,
-        status: data.status,
-        ipAddress: data.ipAddress,
-        processes: data.processes
-    };
-    const machine = await Machine.findByIdAndUpdate(req.params.id, machineToUpdate, { new: true })
-    req.io.sockets.in(req.params.id).emit('machineUpdate', machineToUpdate)
-    res.status(status.OK).json(machineToUpdate);
+    const machine = await Machine.findById(req.params.id)
+    machine.name = req.body.name
+    machine.operatingSystem = req.body.operatingSystem
+    machine.architecture = req.body.architecture
+    machine.serialNumber = req.body.serialNumber
+    machine.applications = req.body.applications
+    machine.make = req.body.make
+    machine.model = req.body.model
+    machine.publicIp = req.body.publicIp
+    machine.domain = req.body.domain
+    machine.services = req.body.services
+    machine.processes = req.body.processes
+    machine.drives = req.body.drives
+    machine.dateUpdated = Date.now()
+    const updatedMachine = await Machine.findByIdAndUpdate(req.params.id, machine, { new: true })
+    req.io.sockets.in(req.params.id).emit('machineUpdate', updatedMachine)
+    res.status(status.OK).json(updatedMachine);
 });
 
 router.post('/', checkAuth, async (req, res) => {

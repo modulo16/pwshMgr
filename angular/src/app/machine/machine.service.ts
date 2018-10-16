@@ -1,4 +1,4 @@
-import { Machine, Job } from './machine.model'
+import { Machine, Job, Drive, DriveDetails } from './machine.model'
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
@@ -33,6 +33,10 @@ export class MachineService {
 
     getJobByMachine(machineID): Observable<Job[]> {
       return this.http.get<Job[]>('/api/machines/jobs/' + machineID);
+    }
+
+    getMachineDrives(machineID): Observable<DriveDetails> {
+      return this.http.get<DriveDetails>('/api/machines/' + machineID + '/drives');
     }
 
     getAlertByMachine(machineID): Observable<Alert[]> {

@@ -8,11 +8,16 @@ export interface Service {
     status: String
 }
 
-export interface Drive {
+export interface DriveDetails {
     name: String,
     usedGB: String,
     freeGB: String
 }
+
+export interface Drive {
+    drives: DriveDetails[]
+}
+
 
 export interface Process {
     name: String
