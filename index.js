@@ -25,9 +25,11 @@ bcrypt.hash("pwshmgradmin", 10)
       });
   });
 
+console.log(process.env.ProgramFiles)
 cron.schedule('*/10 * * * *', () => {
-  let scriptPath = path.join(__dirname, './scripts/data_update.ps1');
-  exec(`pwsh -file "${scriptPath}"`, (err, stdout, stderr) => {
+  let scriptPath = process.env.ProgramFiles + "\\pwshMgr\\scripts\\data_update.ps1"
+  console.log(scriptPath)
+  exec(`pwsh -file ""${scriptPath}""`, (err, stdout, stderr) => {
     if (err) {
       console.error(err);
       return;

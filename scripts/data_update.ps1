@@ -11,6 +11,47 @@ $ApiHeaders = @{
     "authorization" = "Bearer $($Token.token)"
 }
 
+$Functions = {
+    Function Get-PwshMgrCredential {
+        Param(
+            [Parameter(Mandatory = $true)][String]$ID
+        )
+        $C = Invoke-WebRequest -Uri "$ApiEndpoint/credentials/$ID" -UseBasicParsing -Headers $ApiHeaders
+        $C = $C.Content | ConvertFrom-Json
+        $CPwd = $C.password | ConvertTo-SecureString -AsPlainText -Force
+        $CUser = $C.username
+        $C = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $CUser, $CPwd
+        Return $C
+    }
+
+    Function Send-ToSlack {
+        Param(
+            [Parameter(Mandatory = $true)][String]$ID,
+            [Parameter(Mandatory = $true)][String]$AlertText
+        )
+        $SlackData = Invoke-WebRequest -Uri "$ApiEndpoint/integrations/$ID" -Method Get -UseBasicParsing -Headers $ApiHeaders
+        $SlackData = $SlackData.Content | ConvertFrom-Json
+        $SlackPostBody = @{
+            'text' = $AlertText
+        } | ConvertTo-Json
+        Invoke-WebRequest -Uri $SlackData.webHook -ContentType 'application/json' -Body $SlackPostBody -Method Post -UseBasicParsing
+    }
+
+    Function New-PwshMgrAlert {
+        Param(
+            [Parameter(Mandatory = $true)][System.Object]$Policy,
+            [Parameter(Mandatory = $true)][String]$AlertText
+        )
+        $AlertBody = @{
+            'name'          = $AlertText
+            'machineId'     = $Policy.machineId
+            'alertPolicyId' = $Policy._id
+            'priority'      = $Policy.priority
+        } | ConvertTo-Json
+        Invoke-WebRequest -Uri "$ApiEndpoint/alerts" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
+    }
+}
+
 $Machines = Invoke-WebRequest -Uri "$ApiEndpoint/machines" -Headers $ApiHeaders -UseBasicParsing
 $Machines = $Machines.Content | ConvertFrom-Json
 $AlertPolicies = Invoke-WebRequest -Uri "$ApiEndpoint/alertpolicies" -Headers $ApiHeaders -UseBasicParsing
@@ -57,7 +98,6 @@ foreach ($Machine in $Machines) {
             $computerProperties
         } #scriptblock end
 
-        $Machine
         if (Test-Connection -ComputerName $Machine.ipAddress -bufferSize 4 -Count 1 -ErrorAction SilentlyContinue) {
             Write-Output "Machine is online"
         }
@@ -66,41 +106,29 @@ foreach ($Machine in $Machines) {
             Invoke-WebRequest -Uri "$ApiEndpoint/machines/offline/$($Machine._id)" -Headers $ApiHeaders -UseBasicParsing -Method Post | Out-Null
             Exit
         }
-        $credential = Invoke-WebRequest -Uri "$ApiEndpoint/credentials/$($Machine.credential)" -UseBasicParsing -Headers $ApiHeaders
-        $Credential = $Credential.Content | ConvertFrom-Json
-        $CredentialPwd = $credential.password | ConvertTo-SecureString -AsPlainText -Force
-        $CredentialUser = $credential.username
-        $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $CredentialUser, $CredentialPwd
-        $Output = Invoke-Command -ComputerName $Machine.ipAddress -ScriptBlock $ScriptBlock -Credential $credential -ArgumentList $Machine 
+
+        $Credential = Get-PwshMgrCredential -ID $Machine.credential
+        $Output = Invoke-Command -ComputerName $Machine.ipAddress -ScriptBlock $ScriptBlock -Credential $credential -ArgumentList $Machine
         $json = $Output | ConvertTo-Json -Compress
+
+
+
         Invoke-WebRequest -Uri "$ApiEndpoint/machines/$($Machine._id)" -Method Put -Body $json -UseBasicParsing -ContentType 'application/json'-Headers $ApiHeaders | Out-Null
         foreach ($Policy in $AlertPolicies | Where-Object {$_.machineId -eq $($Machine._id)}) {
             $ActiveAlert = $null
             if ($Policy.type -eq "drive") {
                 $DriveToCheck = $output.drives | Where-Object {$_.name -eq $Policy.item}
                 if ([Double]$DriveToCheck.freeGB -lt [Double]$Policy.threshold) {
-                    $AlertText = "$($DriveToCheck.name) drive on $($output.name) is below $($Policy.threshold)GB. Currently $($DriveToCheck.freeGB)GB"
-                    $AlertBody = @{
-                        'name'          = $AlertText
-                        'machineId'     = $Policy.machineId
-                        'alertPolicyId' = $Policy._id
-                        'priority'      = $Policy.priority
-                    } | ConvertTo-Json
                     $ActiveAlert = $ActiveAlerts | Where-Object {($_.machineId -eq $Policy.machineId) -and ($_.alertPolicyId -eq $Policy._id)}
                     if ($ActiveAlert) {
                         Invoke-WebRequest -Uri "$ApiEndpoint/alerts/$($ActiveAlert._id)" -Method Put -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
                         Continue
                     }
-                    Invoke-WebRequest -Uri "$ApiEndpoint/alerts" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
+                    $AlertText = "$($DriveToCheck.name) drive on $($output.name) is below $($Policy.threshold)GB. Currently $($DriveToCheck.freeGB)GB"
+                    New-PwshMgrAlert -Policy $Policy -AlertText $AlertText
                     $SlackIntegrations = $Policy.integrations
                     foreach ($Slack in $SlackIntegrations) {
-                        Write-Output $Slack
-                        $SlackData = Invoke-WebRequest -Uri "$ApiEndpoint/integrations/$Slack" -Method Get -UseBasicParsing -Headers $ApiHeaders
-                        $SlackData = $SlackData.Content | ConvertFrom-Json
-                        $SlackPostBody = @{
-                            'text' = $AlertText
-                        } | ConvertTo-Json
-                        Invoke-WebRequest -Uri $SlackData.webHook -ContentType 'application/json' -Body $SlackPostBody -Method Post -UseBasicParsing
+                        Send-ToSlack -ID $Slack -AlertText $AlertText
                     }
                 }
             }
@@ -109,28 +137,16 @@ foreach ($Machine in $Machines) {
                 $Machine = $Machine.Content | ConvertFrom-Json
                 $ServiceToCheck = $output.services | Where-Object {$_.displayName -eq $Policy.item}
                 if ($ServiceToCheck.status -eq "Stopped") {
-                    $AlertText = """$($ServiceToCheck.displayName)"" service is stopped on ""$($output.name)"""
-                    $AlertBody = @{
-                        'name'          = $AlertText
-                        'machineId'     = $Policy.machineId
-                        'alertPolicyId' = $Policy._id
-                        'priority'      = $Policy.priority
-                    } | ConvertTo-Json
                     $ActiveAlert = $ActiveAlerts | Where-Object {($_.machineId -eq $Policy.machineId) -and ($_.alertPolicyId -eq $Policy._id)}
                     if ($ActiveAlert) {
                         Invoke-WebRequest -Uri "$ApiEndpoint/alerts/$($ActiveAlert._id)" -Method Put -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
                         Continue
                     }
-                    Invoke-WebRequest -Uri "$ApiEndpoint/alerts" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
+                    $AlertText = """$($ServiceToCheck.displayName)"" service is stopped on ""$($output.name)"""
+                    New-PwshMgrAlert -Policy $Policy -AlertText $AlertText
                     $SlackIntegrations = $Policy.integrations
                     foreach ($Slack in $SlackIntegrations) {
-                        Write-Output $Slack
-                        $SlackData = Invoke-WebRequest -Uri "$ApiEndpoint/integrations/$Slack" -Method Get -UseBasicParsing -Headers $ApiHeaders
-                        $SlackData = $SlackData.Content | ConvertFrom-Json
-                        $SlackPostBody = @{
-                            'text' = $AlertText
-                        } | ConvertTo-Json
-                        Invoke-WebRequest -Uri $SlackData.webHook -ContentType 'application/json' -Body $SlackPostBody -Method Post -UseBasicParsing
+                        Send-ToSlack -ID $Slack -AlertText $AlertText
                     }
                 }
             }
@@ -138,28 +154,20 @@ foreach ($Machine in $Machines) {
                 $Processes = $output.processes | Select-Object name
                 foreach ($Process in $Processes) {
                     if ($Process.name -eq $policy.item) {
-                        $AlertText = """$($policy.item)"" process is running on ""$($output.name)"""
-                        $AlertBody = @{
-                            'name'          = $AlertText
-                            'machineId'     = $Policy.machineId
-                            'alertPolicyId' = $Policy._id
-                            'priority'      = $Policy.priority
-                        } | ConvertTo-Json
+                        
+
                         $ActiveAlert = $ActiveAlerts | Where-Object {($_.machineId -eq $Policy.machineId) -and ($_.alertPolicyId -eq $Policy._id)}
                         if ($ActiveAlert) {
                             Invoke-WebRequest -Uri "$ApiEndpoint/alerts/$($ActiveAlert._id)" -Method Put -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
                             Continue
                         }
-                        Invoke-WebRequest -Uri "$ApiEndpoint/alerts" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
+                        $AlertText = """$($policy.item)"" process is running on ""$($output.name)"""
+                        New-PwshMgrAlert -Policy $Policy -AlertText $AlertText
+
+
                         $SlackIntegrations = $Policy.integrations
                         foreach ($Slack in $SlackIntegrations) {
-                            Write-Output $Slack
-                            $SlackData = Invoke-WebRequest -Uri "$ApiEndpoint/integrations/$Slack" -Method Get -UseBasicParsing -Headers $ApiHeaders
-                            $SlackData = $SlackData.Content | ConvertFrom-Json
-                            $SlackPostBody = @{
-                                'text' = $AlertText
-                            } | ConvertTo-Json
-                            Invoke-WebRequest -Uri $SlackData.webHook -ContentType 'application/json' -Body $SlackPostBody -Method Post -UseBasicParsing
+                            Send-ToSlack -ID $Slack -AlertText $AlertText
                         }
                         break
                     }
@@ -173,28 +181,18 @@ foreach ($Machine in $Machines) {
                     }
                 }
                 if (!$running) {
-                    $AlertText = """$($policy.item)"" process is not running on ""$($output.name)"""
-                    $AlertBody = @{
-                        'name'          = $AlertText
-                        'machineId'     = $Policy.machineId
-                        'alertPolicyId' = $Policy._id
-                        'priority'      = $Policy.priority
-                    } | ConvertTo-Json
-                    $ActiveAlert = $ActiveAlerts | Where-Object {($_.machineId -eq $Policy.machineId) -and ($_.alertPolicyId -eq $Policy._id)}
+                $ActiveAlert = $ActiveAlerts | Where-Object {($_.machineId -eq $Policy.machineId) -and ($_.alertPolicyId -eq $Policy._id)}
                     if ($ActiveAlert) {
                         Invoke-WebRequest -Uri "$ApiEndpoint/alerts/$($ActiveAlert._id)" -Method Put -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
                         Continue
                     }
-                    Invoke-WebRequest -Uri "$ApiEndpoint/alerts" -Method Post -Body $AlertBody -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
+                    $AlertText = """$($policy.item)"" process is not running on ""$($output.name)"""
+                    New-PwshMgrAlert -Policy $Policy -AlertText $AlertText
+                    
+
                     $SlackIntegrations = $Policy.integrations
                     foreach ($Slack in $SlackIntegrations) {
-                        Write-Output $Slack
-                        $SlackData = Invoke-WebRequest -Uri "$ApiEndpoint/integrations/$Slack" -Method Get -UseBasicParsing -Headers $ApiHeaders
-                        $SlackData = $SlackData.Content | ConvertFrom-Json
-                        $SlackPostBody = @{
-                            'text' = $AlertText
-                        } | ConvertTo-Json
-                        Invoke-WebRequest -Uri $SlackData.webHook -ContentType 'application/json' -Body $SlackPostBody -Method Post -UseBasicParsing
+                        Send-ToSlack -ID $Slack -AlertText $AlertText
                     }
                 } 
                 else {
@@ -205,7 +203,7 @@ foreach ($Machine in $Machines) {
 
     } #job block end
 
-    Start-Job -ScriptBlock $JobBlock -ArgumentList $Machine, $ApiHeaders, $ApiEndpoint, $AlertPolicies, $ActiveAlerts
+    Start-Job -ScriptBlock $JobBlock -ArgumentList $Machine, $ApiHeaders, $ApiEndpoint, $AlertPolicies, $ActiveAlerts -InitializationScript $Functions
 
 } #foreach machine end
 

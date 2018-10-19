@@ -28,7 +28,8 @@
   },
   "pkg": {
     "assets": [
-      "dist/*"
+      "dist/*",
+      "scripts/*.ps1"
     ]
   }
 }
