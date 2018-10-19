@@ -23,7 +23,7 @@ $Functions = {
         $C = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $CUser, $CPwd
         Return $C
     }
-
+    
     Function Send-ToSlack {
         Param(
             [Parameter(Mandatory = $true)][String]$ID,
@@ -111,8 +111,6 @@ foreach ($Machine in $Machines) {
         $Output = Invoke-Command -ComputerName $Machine.ipAddress -ScriptBlock $ScriptBlock -Credential $credential -ArgumentList $Machine
         $json = $Output | ConvertTo-Json -Compress
 
-
-
         Invoke-WebRequest -Uri "$ApiEndpoint/machines/$($Machine._id)" -Method Put -Body $json -UseBasicParsing -ContentType 'application/json'-Headers $ApiHeaders | Out-Null
         foreach ($Policy in $AlertPolicies | Where-Object {$_.machineId -eq $($Machine._id)}) {
             $ActiveAlert = $null
@@ -126,8 +124,7 @@ foreach ($Machine in $Machines) {
                     }
                     $AlertText = "$($DriveToCheck.name) drive on $($output.name) is below $($Policy.threshold)GB. Currently $($DriveToCheck.freeGB)GB"
                     New-PwshMgrAlert -Policy $Policy -AlertText $AlertText
-                    $SlackIntegrations = $Policy.integrations
-                    foreach ($Slack in $SlackIntegrations) {
+                    foreach ($Slack in $Policy.integrations) {
                         Send-ToSlack -ID $Slack -AlertText $AlertText
                     }
                 }
@@ -144,8 +141,7 @@ foreach ($Machine in $Machines) {
                     }
                     $AlertText = """$($ServiceToCheck.displayName)"" service is stopped on ""$($output.name)"""
                     New-PwshMgrAlert -Policy $Policy -AlertText $AlertText
-                    $SlackIntegrations = $Policy.integrations
-                    foreach ($Slack in $SlackIntegrations) {
+                    foreach ($Slack in $Policy.integrations) {
                         Send-ToSlack -ID $Slack -AlertText $AlertText
                     }
                 }
@@ -154,8 +150,6 @@ foreach ($Machine in $Machines) {
                 $Processes = $output.processes | Select-Object name
                 foreach ($Process in $Processes) {
                     if ($Process.name -eq $policy.item) {
-                        
-
                         $ActiveAlert = $ActiveAlerts | Where-Object {($_.machineId -eq $Policy.machineId) -and ($_.alertPolicyId -eq $Policy._id)}
                         if ($ActiveAlert) {
                             Invoke-WebRequest -Uri "$ApiEndpoint/alerts/$($ActiveAlert._id)" -Method Put -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
@@ -163,10 +157,7 @@ foreach ($Machine in $Machines) {
                         }
                         $AlertText = """$($policy.item)"" process is running on ""$($output.name)"""
                         New-PwshMgrAlert -Policy $Policy -AlertText $AlertText
-
-
-                        $SlackIntegrations = $Policy.integrations
-                        foreach ($Slack in $SlackIntegrations) {
+                        foreach ($Slack in $Policy.integrations) {
                             Send-ToSlack -ID $Slack -AlertText $AlertText
                         }
                         break
@@ -181,17 +172,14 @@ foreach ($Machine in $Machines) {
                     }
                 }
                 if (!$running) {
-                $ActiveAlert = $ActiveAlerts | Where-Object {($_.machineId -eq $Policy.machineId) -and ($_.alertPolicyId -eq $Policy._id)}
+                    $ActiveAlert = $ActiveAlerts | Where-Object {($_.machineId -eq $Policy.machineId) -and ($_.alertPolicyId -eq $Policy._id)}
                     if ($ActiveAlert) {
                         Invoke-WebRequest -Uri "$ApiEndpoint/alerts/$($ActiveAlert._id)" -Method Put -ContentType 'application/json' -UseBasicParsing -Headers $ApiHeaders
                         Continue
                     }
                     $AlertText = """$($policy.item)"" process is not running on ""$($output.name)"""
                     New-PwshMgrAlert -Policy $Policy -AlertText $AlertText
-                    
-
-                    $SlackIntegrations = $Policy.integrations
-                    foreach ($Slack in $SlackIntegrations) {
+                    foreach ($Slack in $Policy.integrations) {
                         Send-ToSlack -ID $Slack -AlertText $AlertText
                     }
                 } 
