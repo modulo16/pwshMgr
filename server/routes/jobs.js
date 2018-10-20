@@ -41,7 +41,7 @@ router.post('/', checkAuth, async (req, res) => {
 
     var exec = require('child_process').exec;
     if (req.body.application) {
-        let scriptPath = process.env.ProgramFiles + "\\pwshMgr\\scripts\\install_choco_app.ps1"
+        let scriptPath = require("path").resolve(__dirname, '../../scripts/install_choco_app.ps1')
         let command = `pwsh -file ${scriptPath} -machineID ${machine._id} -jobID ${newJob._id}`
         exec(command, function callback(error, stdout, stderr) {
             console.log(stdout)
@@ -71,7 +71,7 @@ router.post('/', checkAuth, async (req, res) => {
         });
     }
     if (req.body.script) {
-        let scriptPath = process.env.ProgramFiles + "\\pwshMgr\\scripts\\script_runner.ps1"
+        let scriptPath = require("path").resolve(__dirname, '../../scripts/script_runner.ps1')
         let command = `pwsh -file "${scriptPath}" -machineID ${machine._id} -ScriptID ${req.body.script}`
         exec(command, function callback(error, stdout, stderr) {
             if (!stderr) {

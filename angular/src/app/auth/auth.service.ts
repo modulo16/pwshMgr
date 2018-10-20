@@ -13,14 +13,20 @@ export class AuthService {
   private userId: string;
   private authStatusListener = new Subject<boolean>();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) { }
 
   getToken() {
-    return this.token;
+    const token = localStorage.getItem("token");
+    return token;
   }
 
   getIsAuth() {
-    return this.isAuthenticated;
+    if (localStorage.getItem('token')) {
+      return true;
+    } else {
+      this.router.navigate(['/login']);
+      return false;
+    }
   }
 
   getUserId() {
@@ -34,7 +40,7 @@ export class AuthService {
   createUser(email: string, password: string) {
     const authData: AuthData = { email: email, password: password };
     this.http
-      .post("/api/users/register", authData)
+      .post("http://localhost:8080/api/users/register", authData)
       .subscribe(() => {
         this.router.navigate(["/"]);
       }, error => {
@@ -46,7 +52,7 @@ export class AuthService {
     const authData: AuthData = { email: email, password: password };
     this.http
       .post<{ token: string; expiresIn: number; userId: string }>(
-        "/api/users/login",
+        "http://localhost:8080/api/users/login",
         authData
       )
       .subscribe(response => {

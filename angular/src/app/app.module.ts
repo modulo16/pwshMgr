@@ -97,99 +97,123 @@ import { DashboardService } from './dashboard/dashboard.service';
     RouterModule.forRoot([
       {
         path: 'machines/new',
-        component: NewMachineComponent
+        component: NewMachineComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'applications/new',
-        component: NewApplicationComponent
+        component: NewApplicationComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'credentials/new',
-        component: NewCredentialComponent
+        component: NewCredentialComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'alerts/new-disk-space',
-        component: NewDiskAlertComponent
+        component: NewDiskAlertComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'alerts/new/process',
-        component: NewProcessAlertComponent
+        component: NewProcessAlertComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'alerts/new-windows-service',
-        component: NewWindowsServiceAlertComponent
+        component: NewWindowsServiceAlertComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'integrations/new-slack',
-        component: NewSlackIntegrationComponent
+        component: NewSlackIntegrationComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'scripts/new',
-        component: NewScriptComponent
+        component: NewScriptComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'jobs/new',
-        component: NewJobComponent
+        component: NewJobComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'jobs/new/script',
-        component: RunScriptJobComponent
+        component: RunScriptJobComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'applications/:id',
-        component: ApplicationDetailsComponent
+        component: ApplicationDetailsComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'machines/:id',
-        component: MachinedetailsComponent
+        component: MachinedetailsComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'scripts/:id',
-        component: ScriptDetailsComponent
+        component: ScriptDetailsComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'alertpolicies/:id',
-        component: AlertPolicyDetailsComponent
+        component: AlertPolicyDetailsComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'jobs/:id',
-        component: JobDetailsComponent
+        component: JobDetailsComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'credentials/:id',
-        component: CredentialDetailsComponent
+        component: CredentialDetailsComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'integrations/:id',
-        component: IntegrationDetailComponent
+        component: IntegrationDetailComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'alerts/:id',
-        component: AlertDetailsComponent
+        component: AlertDetailsComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'users',
-        component: UserListComponent
+        component: UserListComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'scripts',
-        component: ScriptListComponent
+        component: ScriptListComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'integrations',
-        component: IntegrationListComponent
+        component: IntegrationListComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'jobs',
-        component: JobListComponent
+        component: JobListComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'alertpolicies',
-        component: AlertPolicyListComponent
+        component: AlertPolicyListComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'alerts',
-        component: AlertListComponent
+        component: AlertListComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'login',
@@ -197,28 +221,32 @@ import { DashboardService } from './dashboard/dashboard.service';
       },
       {
         path: 'credentials',
-        component: CredentialListComponent
+        component: CredentialListComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'applications',
-        component: ApplicationListComponent
+        component: ApplicationListComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'dashboard',
-        component: DashboardComponent
+        component: DashboardComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'machines',
-        component: MachinelistComponent
+        component: MachinelistComponent,
+        canActivate: [AuthGuard]
       },
-      { path: '**', redirectTo: 'login', pathMatch: 'full' },
+      { path: '**', redirectTo: 'machines', pathMatch: 'full' },
     ]),
     FormsModule,
     ReactiveFormsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    MachineService, UserService, ApplicationService, CredentialService, ScriptService, IntegrationService, JobService, DashboardService],
+    MachineService, UserService, ApplicationService, CredentialService, ScriptService, IntegrationService, JobService, DashboardService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
