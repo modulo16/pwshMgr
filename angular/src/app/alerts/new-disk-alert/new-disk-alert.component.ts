@@ -36,7 +36,7 @@ export class NewDiskAlertComponent implements OnInit {
       'item': ['', [Validators.required]],
       'threshold': ['', [Validators.required]],
       'priority': ['', [Validators.required]],
-      'integrations': ['', [Validators.required]]
+      'integrations': ['']
     })
   }
 

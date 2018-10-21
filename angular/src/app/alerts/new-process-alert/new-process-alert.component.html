@@ -31,7 +31,7 @@
       </div>
       <div class="form-group">
         <label for="exampleFormControlSelect2">Integrations</label>
-        <select multiple class="form-control" [formControl]="newProcessAlertForm.controls['integrations']" required>
+        <select multiple class="form-control" [formControl]="newProcessAlertForm.controls['integrations']">
           <option *ngFor="let integration of integrations" [value]="integration._id">{{integration.name}}</option>
         </select>
       </div>

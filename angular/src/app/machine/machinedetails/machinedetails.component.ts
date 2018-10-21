@@ -103,7 +103,17 @@ export class MachinedetailsComponent implements OnInit, OnDestroy {
   hideAlerts() {
     this.alerts = null
   }
+  startMaintenance() {
+    this.machine.status = "Maintenance"
+    this.machineService.updateMachine(this.machine)
+    .subscribe()
+  }
 
+  stopMaintenance() {
+    this.machine.status = "Pending Poll"
+    this.machineService.updateMachine(this.machine)
+    .subscribe()
+  }
 
   changeCredential(template: TemplateRef<any>) {
     this.credentialService.getAllCredentials()
@@ -120,6 +130,9 @@ export class MachinedetailsComponent implements OnInit, OnDestroy {
     }
     if (this.machine.status == "Online, WinRM unreachable") {
       return "table-danger"
+    }
+    if (this.machine.status == "Maintenance") {
+      return "table-warning"
     }
   }
 

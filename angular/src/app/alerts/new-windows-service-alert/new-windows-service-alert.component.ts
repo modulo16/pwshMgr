@@ -34,7 +34,7 @@ export class NewWindowsServiceAlertComponent implements OnInit {
       'machineId': ['', [Validators.required]],
       'item': ['', [Validators.required]],
       'priority': ['', [Validators.required]],
-      'integrations': ['', [Validators.required]]
+      'integrations': ['']
     })
   }
 

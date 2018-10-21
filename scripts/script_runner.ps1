@@ -13,7 +13,7 @@ $ApiCredentials = @{
 } | ConvertTo-Json
 
 $Token = Invoke-WebRequest -Method Post -Uri "$ApiEndpoint/users/login" -Body $ApiCredentials -ContentType 'application/json' -UseBasicParsing
-$Token = $Token.Content | ConvertFrom-Json | Select token
+$Token = $Token.Content | ConvertFrom-Json | Select-Object token
 $ApiHeaders = @{
     "authorization" = "Bearer $($Token.token)"
 }

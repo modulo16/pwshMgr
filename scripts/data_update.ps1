@@ -52,7 +52,7 @@ $Functions = {
     }
 }
 
-$Machines = Invoke-WebRequest -Uri "$ApiEndpoint/machines" -Headers $ApiHeaders -UseBasicParsing
+$Machines = Invoke-WebRequest -Uri "$ApiEndpoint/machines/nonmaintenance" -Headers $ApiHeaders -UseBasicParsing
 $Machines = $Machines.Content | ConvertFrom-Json
 $AlertPolicies = Invoke-WebRequest -Uri "$ApiEndpoint/alertpolicies" -Headers $ApiHeaders -UseBasicParsing
 $AlertPolicies = $AlertPolicies.Content | ConvertFrom-Json

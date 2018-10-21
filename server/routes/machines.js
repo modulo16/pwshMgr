@@ -19,6 +19,11 @@ router.get('/count', (req, res) => {
     });
 });
 
+router.get('/nonmaintenance', async (req, res) => {
+    const machines = await Machine.find({"status": {"$ne": "Maintenance"} },'name _id operatingSystem status ipAddress credential');
+    res.send(machines);
+});
+
 router.get('/:id', checkAuth, validateObjectId, async (req, res) => {
     const machine = await Machine.findById(req.params.id, '-services -applications -processes');
     if (!machine) return res.status(404).send('The machine with the given ID was not found.');
@@ -54,10 +59,14 @@ router.delete('/:id', checkAuth,validateObjectId, async (req, res) => {
     res.status(status.OK).json({ message: 'SUCCESS' });
 });
 
+
+
 router.get('/', checkAuth, async (req, res) => {
     const machines = await Machine.find({},'name _id operatingSystem status ipAddress credential');
     res.send(machines);
 });
+
+
 
 router.put('/:id', checkAuth, validateObjectId, async (req, res) => {
     const machine = await Machine.findById(req.params.id)

@@ -47,6 +47,8 @@
   <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="hideJobs()" *ngIf="jobs">Hide Jobs</button>
   <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="showAlerts()" *ngIf="!alerts">Alerts</button>
   <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="hideAlerts()" *ngIf="alerts">Hide Alerts</button>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="startMaintenance()" *ngIf="machine.status!=='Maintenance'">Start Maintenance</button>
+  <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="stopMaintenance()" *ngIf="machine.status=='Maintenance'">Stop Maintenance</button>
   <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="changeCredential(editTemplate)">Credential</button>
   <button type="button" class="btn btn-secondary btn-sm btn-space" (click)="deleteMachine()">Delete</button>
   <br>
