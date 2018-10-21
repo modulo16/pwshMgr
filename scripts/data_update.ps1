@@ -108,7 +108,16 @@ foreach ($Machine in $Machines) {
         }
 
         $Credential = Get-PwshMgrCredential -ID $Machine.credential
-        $Output = Invoke-Command -ComputerName $Machine.ipAddress -ScriptBlock $ScriptBlock -Credential $credential -ArgumentList $Machine
+
+        Try {
+        Write-Output "attempting WINRM on $($Machine.name)"
+            $Output = Invoke-Command -ComputerName $Machine.ipAddress -ScriptBlock $ScriptBlock -Credential $credential -ArgumentList $Machine -ErrorAction Stop
+        }
+        Catch {   
+            Write-Error "failed to connect to WINRM on $($Machine.name)"
+            Break
+        }
+        
         $json = $Output | ConvertTo-Json -Compress
 
         Invoke-WebRequest -Uri "$ApiEndpoint/machines/$($Machine._id)" -Method Put -Body $json -UseBasicParsing -ContentType 'application/json'-Headers $ApiHeaders | Out-Null

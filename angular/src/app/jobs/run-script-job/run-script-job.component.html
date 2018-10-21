@@ -17,7 +17,7 @@
           <option *ngFor="let machine of machines" [value]="machine._id">{{machine.name}}</option>
         </select>
       </div>
-      <button type="Start" class="btn btn-primary" [disabled]="!newJobForm.valid">Submit</button>
+      <button type="Start" class="btn btn-secondary" [disabled]="!newJobForm.valid">Submit</button>
     </form>
   </div>
 

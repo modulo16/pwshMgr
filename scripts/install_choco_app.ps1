@@ -39,5 +39,6 @@ $parms = @{
 
 Invoke-Command @parms { 
     $ChocoApp = $args[0]
-    choco install $chocoApp -y
+    $Output = & choco install $ChocoApp -y
+    $Output
 }
