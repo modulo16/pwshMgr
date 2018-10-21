@@ -40,6 +40,15 @@ router.post('/offline/:id', checkAuth, validateObjectId, async (req,res) => {
     res.status(status.OK).json({message: 'Success'});
 })
 
+// update status (winrm)
+router.post('/winrmfailed/:id', checkAuth, validateObjectId, async (req,res) => {
+    const machine = await Machine.findById(req.params.id);
+    machine.status = "Online, WinRM unreachable"
+    await Machine.findByIdAndUpdate(req.params.id, machine, {new:true})
+    req.io.sockets.in(req.params.id).emit('machineUpdate', machine)
+    res.status(status.OK).json({message: 'Success'});
+})
+
 router.delete('/:id', checkAuth,validateObjectId, async (req, res) => {
     await Machine.findByIdAndRemove(req.params.id);
     res.status(status.OK).json({ message: 'SUCCESS' });
@@ -65,6 +74,7 @@ router.put('/:id', checkAuth, validateObjectId, async (req, res) => {
     machine.processes = req.body.processes
     machine.drives = req.body.drives
     machine.dateUpdated = Date.now()
+    machine.status = req.body.status
     const updatedMachine = await Machine.findByIdAndUpdate(req.params.id, machine, { new: true })
     req.io.sockets.in(req.params.id).emit('machineUpdate', updatedMachine)
     res.status(status.OK).json(updatedMachine);

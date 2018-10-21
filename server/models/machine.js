@@ -17,7 +17,8 @@ var driveSchema = new Schema ({
 })
 
 var processSchema = new Schema ({
-  name: String  
+  name: String,
+  pId: String
 })
 
 var machineSchema = new Schema({

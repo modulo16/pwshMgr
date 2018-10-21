@@ -74,11 +74,13 @@
       <thead class="thead-light">
         <tr>
           <th>Process Name</th>
+          <th>PID</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let process of machine.processes">
           <td>{{process.name}}</td>
+          <td>{{process.pId}}</td>
         </tr>
       </tbody>
     </table>

@@ -118,6 +118,9 @@ export class MachinedetailsComponent implements OnInit, OnDestroy {
     if (this.machine.status == "Offline") {
       return "table-danger"
     }
+    if (this.machine.status == "Online, WinRM unreachable") {
+      return "table-danger"
+    }
   }
 
   runThis(service) {

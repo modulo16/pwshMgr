@@ -68,7 +68,7 @@ foreach ($Machine in $Machines) {
             $publicip = $publicip.content
             $publicip = $publicip.Trim()
             $HostName = hostname
-            $processes = Get-Process | Select-Object @{Name = "name"; Expr = {$_.ProcessName}}
+            $processes = Get-Process | Select-Object @{Name = "name"; Expr = {$_.ProcessName}}, @{Name = "pId"; Expr = {$_.Id}}
             $domain = (Get-WmiObject Win32_ComputerSystem).Domain
             $Services = Get-Service | Select-Object @{Name = "displayName"; Expr = {$_.DisplayName}}, @{Name = "status"; Expr = {$_.Status}} | ConvertTo-Csv | ConvertFrom-Csv
             $OSDetails = Get-CimInstance Win32_OperatingSystem 
@@ -115,6 +115,7 @@ foreach ($Machine in $Machines) {
         }
         Catch {   
             Write-Error "failed to connect to WINRM on $($Machine.name)"
+            Invoke-WebRequest -Uri "$ApiEndpoint/machines/winrmfailed/$($Machine._id)" -Headers $ApiHeaders -UseBasicParsing -Method Post | Out-Null
             Break
         }
         

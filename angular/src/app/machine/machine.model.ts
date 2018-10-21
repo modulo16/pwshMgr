@@ -20,7 +20,8 @@ export interface Drive {
 
 
 export interface Process {
-    name: String
+    name: String,
+    pId: String
 }
 
 export interface Job {
