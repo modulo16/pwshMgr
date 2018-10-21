@@ -1,4 +1,5 @@
-﻿# add requires admin here
+﻿#requires -runasadministrator
+
 $ErrorActionPreference = "Stop"
 
 # Enable TLS 1.2 since it is required for certain HTTPS connections
