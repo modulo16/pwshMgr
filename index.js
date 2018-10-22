@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const api = require('./server/routes/api');
@@ -8,9 +9,9 @@ const { exec } = require('child_process');
 var cron = require('node-cron');
 const bcrypt = require("bcryptjs");
 const User = require('./server/models/user');
-require('dotenv').config();
 
-bcrypt.hash("pwshmgradmin", 10)
+
+bcrypt.hash(process.env.ADMINPW, 10)
   .then(hash => {
     const user = new User({
       email: "admin@admin.admin",
@@ -25,7 +26,6 @@ bcrypt.hash("pwshmgradmin", 10)
       });
   });
 
-console.log(process.env.ProgramFiles)
 cron.schedule('*/1 * * * *', () => {
   let scriptPath = path.join(__dirname, './scripts/data_update.ps1');
   exec(`pwsh -file ${scriptPath}`, (err, stdout, stderr) => {
