@@ -87,9 +87,6 @@ $Params = @{
 }
 Start-Process @Params
 
-# Create .env file
-New-Item -ItemType File -Path "$PwshMgrDir\pwshMgr-$version\.env"
-
 # Generate JWT secret key
 Add-Type -AssemblyName System.Security
 [Reflection.Assembly]::LoadWithPartialName("System.Security")
@@ -136,6 +133,18 @@ Invoke-Expression $SetService
 # Set Trusted Hosts
 Write-Output "Setting trusted hosts to *"
 Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value "*" -Force
+
+# Open TCP 8080 inbound
+Write-Output "Opening port 8080 inbound on Windows Firewall"
+$Params = @{
+    DisplayName = 'pwshMgr Web Portal Inbound'
+    Profile = @('Domain', 'Private', 'Public')
+    Direction = "Inbound"
+    Action = "Allow"
+    Protocol = "TCP"
+    LocalPort = "8080"
+}
+New-NetFirewallRule @Params
 
 # Start Service
 Start-Service -Name pwshmgr
