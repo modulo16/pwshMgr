@@ -107,7 +107,7 @@ $DotEnv = "MONGODBPATH=mongodb://localhost:27017/pwshmgr" +
 Write-Output "Download NSSM"
 $Params = @{
     Uri = "https://nssm.cc/release/nssm-2.24.zip"
-    OutFile = "$PwshMgrDirectory\temp\nssm-2.24.zip"
+    OutFile = "$PwshMgrDir\temp\nssm-2.24.zip"
     UseBasicParsing = $True
 }
 Invoke-WebRequest @Params
