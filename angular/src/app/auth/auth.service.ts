@@ -40,7 +40,7 @@ export class AuthService {
   createUser(email: string, password: string) {
     const authData: AuthData = { email: email, password: password };
     this.http
-      .post("http://localhost:8080/api/users/register", authData)
+      .post("/api/users/register", authData)
       .subscribe(() => {
         this.router.navigate(["/"]);
       }, error => {
@@ -52,7 +52,7 @@ export class AuthService {
     const authData: AuthData = { email: email, password: password };
     this.http
       .post<{ token: string; expiresIn: number; userId: string }>(
-        "http://localhost:8080/api/users/login",
+        "/api/users/login",
         authData
       )
       .subscribe(response => {
