@@ -45,6 +45,17 @@ Invoke-Expression $SetService
 Write-Output "Setting trusted hosts to *"
 Set-Item -Path WSMan:\localhost\Client\TrustedHosts -Value "*" -Force
 
+# Open TCP 8080 inbound
+$Params = @{
+    DisplayName = 'pwshMgr Web Portal Inbound'
+    Profile = @('Domain', 'Private', 'Public')
+    Direction = "Inbound"
+    Action = "Allow"
+    Protocol = "TCP"
+    LocalPort = "8080"
+}
+New-NetFirewallRule @Params
+
 # Start Service
 Start-Service -Name pwshmgr
 
