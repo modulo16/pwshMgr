@@ -25,7 +25,6 @@ bcrypt.hash(process.env.ADMINPW, 10)
       });
   });
 
-console.log(process.env.ProgramFiles)
 cron.schedule('*/1 * * * *', () => {
   let scriptPath = path.join(__dirname, './scripts/data_update.ps1');
   exec(`pwsh -file ${scriptPath} -ApiPwd ${process.env.ADMINPW}`, (err, stdout, stderr) => {

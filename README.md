@@ -10,6 +10,12 @@ This project is in very early stages and is not suitable for production environm
 
 I am looking for testers, so please get in touch if interested: pwshmgr@gmail.com
 
+## Install with PowerShell
+
+```powershell
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/pwshMgr/pwshMgr/master/install.ps1'))
+```
+
 ## Current Features
 * Monitor Windows Server/Desktops agentless via WinRM. Machines are polled every 10 minutes
 * Run scripts
