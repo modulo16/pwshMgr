@@ -47,7 +47,6 @@ $Params = @{
 }
 Start-Process @Params
 
-
 # Download & install Node.js 10.12.0
 Write-Output "Download & install Node.js 10.12.0"
 $Params = @{

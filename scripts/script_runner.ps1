@@ -2,14 +2,16 @@
     [Parameter(Mandatory = $true)]
     [string] $ScriptID,
     [Parameter(Mandatory = $true)]
-    [string] $MachineID
+    [string] $MachineID,
+    [Parameter(Mandatory = $true)]
+    [string] $ApiPwd
 )
 
 
 $ApiEndpoint = "http://localhost:8080/api"
 $ApiCredentials = @{
     "email"    = "admin@admin.admin"
-    "password" = "pwshmgradmin"
+    "password" = $ApiPwd
 } | ConvertTo-Json
 
 $Token = Invoke-WebRequest -Method Post -Uri "$ApiEndpoint/users/login" -Body $ApiCredentials -ContentType 'application/json' -UseBasicParsing
