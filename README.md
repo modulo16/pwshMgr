@@ -11,10 +11,13 @@ This project is in very early stages and is not suitable for production environm
 I am looking for testers, so please get in touch if interested: pwshmgr@gmail.com
 
 ## Install with PowerShell
+I would reccomend running this install script on a fresh Server 2016 or Windows 10 1709+ build.
 
 ```powershell
 iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/pwshMgr/pwshMgr/master/install.ps1'))
 ```
+
+_Note: Depending on your security settings, you may have to run `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` first to allow downloaded scripts to be executed._
 
 ## Current Features
 * Monitor Windows Server/Desktops agentless via WinRM. Machines are polled every 10 minutes
