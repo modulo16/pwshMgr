@@ -51,5 +51,6 @@ export interface Machine {
     status: String,
     ipAddress: String,
     groupName: String,
-    processes: Process[]
+    processes: Process[],
+    pollingCycle: String
 }

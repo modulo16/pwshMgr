@@ -38,7 +38,8 @@ var machineSchema = new Schema({
     services: [serviceSchema],
     drives: [driveSchema],
     processes: [processSchema],
-    status: String
+    status: String,
+    pollingCycle: String
 });
 
 var Machine = mongoose.model('Machine', machineSchema);

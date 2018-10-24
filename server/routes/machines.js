@@ -20,12 +20,13 @@ router.get('/count', (req, res) => {
 });
 
 router.get('/nonmaintenance', async (req, res) => {
-    const machines = await Machine.find({"status": {"$ne": "Maintenance"} },'name _id operatingSystem status ipAddress credential');
+    console.log(req.query.pollcycle)
+    const machines = await Machine.find({"status": {"$ne": "Maintenance"}, pollingCycle: req.query.pollcycle },'name _id operatingSystem status ipAddress credential');
     res.send(machines);
 });
 
 router.get('/:id', checkAuth, validateObjectId, async (req, res) => {
-    const machine = await Machine.findById(req.params.id, '-services -applications -processes');
+    const machine = await Machine.findById(req.params.id);
     if (!machine) return res.status(404).send('The machine with the given ID was not found.');
     res.send(machine);
 });
@@ -66,8 +67,6 @@ router.get('/', checkAuth, async (req, res) => {
     res.send(machines);
 });
 
-
-
 router.put('/:id', checkAuth, validateObjectId, async (req, res) => {
     const machine = await Machine.findById(req.params.id)
     machine.name = req.body.name
@@ -84,6 +83,13 @@ router.put('/:id', checkAuth, validateObjectId, async (req, res) => {
     machine.drives = req.body.drives
     machine.dateUpdated = Date.now()
     machine.status = req.body.status
+    if (req.body.pollingCycle){
+        console.log("this is an update from the UI")   
+        machine.pollingCycle = req.body.pollingCycle
+    }
+    if (req.body.credential) {
+        machine.credential = req.body.credential
+    }
     const updatedMachine = await Machine.findByIdAndUpdate(req.params.id, machine, { new: true })
     req.io.sockets.in(req.params.id).emit('machineUpdate', updatedMachine)
     res.status(status.OK).json(updatedMachine);
@@ -95,7 +101,8 @@ router.post('/', checkAuth, async (req, res) => {
         ipAddress: data.ipAddress,
         credential: data.credential,
         dateAdded: Date.now(),
-        status: "Online"
+        status: "Online",
+        pollingCycle: data.pollingCycle
     });
     const machine = await newMachine.save()
     res.send(machine)
