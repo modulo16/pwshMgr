@@ -5,6 +5,8 @@ import { MachineService } from '../../machine/machine.service';
 import { AlertService } from '../alert.service';
 import { Router } from '@angular/router';
 import { AlertPolicy } from '../alertpolicy.model';
+import { IntegrationService } from '../../integrations/integration.service';
+import { SlackIntegration } from '../../integrations/integration.model';
 
 @Component({
   selector: 'app-new-process-alert',
@@ -18,32 +20,35 @@ export class NewProcessAlertComponent implements OnInit {
   processes: Process;
   selectedMachine: Machine;
   selectedMachineId: String;
+  integrations: SlackIntegration[]
 
   constructor(
     private machineService: MachineService,
     private alertService: AlertService,
     private router: Router,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private integrationService: IntegrationService
   ) {
 
     this.newProcessAlertForm = this.formBuilder.group({
       'machineId': ['', [Validators.required]],
       'item': ['', [Validators.required]],
-      'threshold': ['', [Validators.required]]
+      'threshold': ['', [Validators.required]],
+      'priority': ['', [Validators.required]],
+      'integrations': ['']
     })
-
    }
 
    onChange() {
-    console.log(this.selectedMachineId)
     this.machineService.getMachineById(this.selectedMachineId)
       .subscribe((machine: Machine) => this.selectedMachine = machine)
-    console.log(this.selectedMachine)
   }
 
   ngOnInit() {
     this.machineService.getAllMachines()
     .subscribe((machines: Array<Machine>) => this.machines = machines)
+    this.integrationService.getAllIntegrations()
+    .subscribe((integrations: Array<SlackIntegration>) => this.integrations = integrations)
   }
 
   submitForm(newProcessAlertForm: AlertPolicy) {

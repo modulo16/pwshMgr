@@ -23,5 +23,11 @@ export class MachinelistComponent implements OnInit {
     if (machine.status == "Offline") {
       return "table-danger"
     }
+    if (machine.status == "Online, WinRM unreachable") {
+      return "table-danger"
+    }
+    if (machine.status == "Maintenance") {
+      return "table-warning"
+    }
   }
 }

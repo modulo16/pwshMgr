@@ -3,5 +3,8 @@ export interface Alert {
     machineId: string,
     name: String,
     alertPolicyId: String,
-    dateRaised: String
+    dateRaised: String,
+    priority: String,
+    occurrenceCount: String,
+    lastOccurred: String
 }

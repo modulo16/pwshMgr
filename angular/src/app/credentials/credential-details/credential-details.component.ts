@@ -19,12 +19,10 @@ export class CredentialDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.id = this.route.snapshot.params['id'];
-
     this.credentialService.getCredentialById(this.id)
     .subscribe(credential => {
       this.credential = credential
     });
-
   }
 
   deleteCredential() {
@@ -32,5 +30,4 @@ export class CredentialDetailsComponent implements OnInit {
       .subscribe()
       this.router.navigate(['credentials'])
   }
-
 }

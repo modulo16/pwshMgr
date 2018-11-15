@@ -3,7 +3,9 @@ export interface AlertPolicy {
     machineId: string,
     drive: string,
     threshold: string,
-    type: string
+    type: string,
+    priority: string,
+    integrations: String
 }
 
 export interface AlertPolicyView {
@@ -12,5 +14,6 @@ export interface AlertPolicyView {
     machineId: string,
     drive: string,
     threshold: string,
-    type: string
+    type: string,
+    priority: string
 }

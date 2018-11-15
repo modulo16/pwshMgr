@@ -17,7 +17,8 @@ var driveSchema = new Schema ({
 })
 
 var processSchema = new Schema ({
-  name: String  
+  name: String,
+  pId: String
 })
 
 var machineSchema = new Schema({
@@ -37,7 +38,8 @@ var machineSchema = new Schema({
     services: [serviceSchema],
     drives: [driveSchema],
     processes: [processSchema],
-    status: String
+    status: String,
+    pollingCycle: String
 });
 
 var Machine = mongoose.model('Machine', machineSchema);

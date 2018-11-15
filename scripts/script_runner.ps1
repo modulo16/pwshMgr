@@ -2,18 +2,20 @@
     [Parameter(Mandatory = $true)]
     [string] $ScriptID,
     [Parameter(Mandatory = $true)]
-    [string] $MachineID
+    [string] $MachineID,
+    [Parameter(Mandatory = $true)]
+    [string] $ApiPwd
 )
 
 
 $ApiEndpoint = "http://localhost:8080/api"
 $ApiCredentials = @{
     "email"    = "admin@admin.admin"
-    "password" = "pwshmgradmin"
+    "password" = $ApiPwd
 } | ConvertTo-Json
 
-$Token = Invoke-WebRequest -Method Post -Uri "$ApiEndpoint/user/login" -Body $ApiCredentials -ContentType 'application/json' -UseBasicParsing
-$Token = $Token.Content | ConvertFrom-Json | Select token
+$Token = Invoke-WebRequest -Method Post -Uri "$ApiEndpoint/users/login" -Body $ApiCredentials -ContentType 'application/json' -UseBasicParsing
+$Token = $Token.Content | ConvertFrom-Json | Select-Object token
 $ApiHeaders = @{
     "authorization" = "Bearer $($Token.token)"
 }
@@ -24,25 +26,21 @@ function ConvertTo-ScriptBlock {
     return $scriptblock
 }
 
-$MachineData = Invoke-WebRequest -Uri "http://localhost:8080/api/machine/$MachineID" -UseBasicParsing -Headers $ApiHeaders
+$MachineData = Invoke-WebRequest -Uri "$ApiEndpoint/machines/$MachineID" -UseBasicParsing -Headers $ApiHeaders
 $MachineData = $MachineData.content | ConvertFrom-Json
 $credentialID = $MachineData.credential
 
-$credential = Invoke-WebRequest -Uri "http://localhost:8080/api/credential/$credentialID" -UseBasicParsing -Headers $ApiHeaders
+$credential = Invoke-WebRequest -Uri "$ApiEndpoint/credentials/$credentialID" -UseBasicParsing -Headers $ApiHeaders
 $Credential = $Credential.Content | ConvertFrom-Json
 $CredentialPwd = $credential.password | ConvertTo-SecureString -AsPlainText -Force
 $CredentialUser = $credential.username
 $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $CredentialUser, $CredentialPwd
 
 
-$return = Invoke-WebRequest -Method Get -Uri http://localhost:8080/api/script/$ScriptID -UseBasicParsing -Headers $ApiHeaders
+$return = Invoke-WebRequest -Method Get -Uri "$ApiEndpoint/scripts/$ScriptID" -UseBasicParsing -Headers $ApiHeaders
 $return = ConvertFrom-Json $return.Content
 
-
-
 $return = ConvertTo-ScriptBlock -string $return.scriptBody
-
-
 
 $parms = @{
     ComputerName = $MachineData.ipAddress

@@ -3,7 +3,7 @@
     <thead class="thead-light">
       <tr>
         <th>Name</th>
-        <th>webHook</th>
+        <th>Type</th>
       </tr>
     </thead>
     <tbody>
@@ -11,7 +11,7 @@
         <td>
           <a [routerLink]="['/integrations', integration._id ]" class="text-dark">{{integration.name}}</a>
         </td>
-        <td>{{integration.webHook}}</td>
+        <td>{{integration.type}}</td>
       </tr>
     </tbody>
   </table>

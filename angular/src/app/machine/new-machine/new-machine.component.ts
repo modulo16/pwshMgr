@@ -21,7 +21,8 @@ export class NewMachineComponent implements OnInit {
   constructor(private credentialService: CredentialService, private machineService: MachineService, private formBuilder: FormBuilder, private router: Router) {
     this.newMachineForm = this.formBuilder.group({
       'ipAddress': ['', [Validators.required,CustomValidator.ipValidator]],
-      'credential': ['', [Validators.required]]
+      'credential': ['', [Validators.required]],
+      'pollingCycle': ['', [Validators.required]]
     });
   }
 

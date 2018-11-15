@@ -3,6 +3,7 @@
     <thead class="thead-light">
       <tr>
         <th>Alert Policy Name</th>
+        <th>Priority</th>
       </tr>
     </thead>
     <tbody>
@@ -10,6 +11,9 @@
         <td>
           <a [routerLink]="['/alertpolicies', alertPolicy._id ]" class="text-dark">{{alertPolicy.name}}</a>
         </td>
+        <td>
+            {{alertPolicy.priority}}
+          </td>
       </tr>
     </tbody>
   </table>

@@ -1,5 +1,6 @@
 export interface SlackIntegration {
     name: string,
     _id: string,
-    webHook: string
+    webHook: string,
+    type: String
 }

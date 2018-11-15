@@ -33,4 +33,13 @@ export class AlertDetailsComponent implements OnInit {
       this.router.navigate(['alerts'])
   }
 
+  class() {
+    if (this.alert.priority == "High") {
+      return "table-warning"
+    }
+    if (this.alert.priority == "Urgent") {
+      return "table-danger"
+    }
+  }
+
 }

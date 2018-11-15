@@ -7,7 +7,8 @@ var alertPolicySchema = new Schema({
     machineId: String,
     threshold: String,
     item: String,
-    severity: String
+    priority: String,
+    integrations: Array
 });
 
 var AlertPolicy = mongoose.model('AlertPolicy', alertPolicySchema);
